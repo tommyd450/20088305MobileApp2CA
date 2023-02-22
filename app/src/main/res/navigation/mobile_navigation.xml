@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="org.com.animalTracker.ui.gallery.GalleryFragment"
+        android:name="org.com.animalTracker.ui.AnimalList.AnimalListFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_animallist" />
 
     <fragment
         android:id="@+id/nav_slideshow"
