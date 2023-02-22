@@ -6,12 +6,12 @@ import org.com.animalTracker.models.AnimalStoreInterface
 import timber.log.Timber
 
 class App: Application() {
-    lateinit var animalStorage: AnimalStorage
+    //lateinit var animalStorage: AnimalStorage
 
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
-        animalStorage = AnimalStorage()
+        //animalStorage = AnimalStorage()
         Timber.i("Animal Tracker Application Started")
     }
 }

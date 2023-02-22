@@ -8,7 +8,7 @@ internal fun getId(): Long {
     return lastId++
 }
 
-class AnimalStorage : AnimalStoreInterface {
+object AnimalStorage : AnimalStoreInterface {
 
     val animals = ArrayList<AnimalModel>()
 
@@ -24,6 +24,7 @@ class AnimalStorage : AnimalStoreInterface {
     override fun create(animal: AnimalModel) {
         animal.id = getId()
         animals.add(animal)
+        Timber.i("TEST")
         logAll()
     }
 
