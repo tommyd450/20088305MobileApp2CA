@@ -22,6 +22,15 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
         return MainHolder(binding)
     }
 
+    fun filterList(filterlist: ArrayList<AnimalModel>) {
+        // below line is to add our filtered
+        // list in our course array list.
+        animals = filterlist
+        // below line is to notify our adapter
+        // as change in recycler view data.
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val donation = animals[holder.adapterPosition]
         holder.bind(donation,listener)
@@ -40,4 +49,6 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
             binding.executePendingBindings()
         }
     }
+
+    //override fun getFilter(){}
 }

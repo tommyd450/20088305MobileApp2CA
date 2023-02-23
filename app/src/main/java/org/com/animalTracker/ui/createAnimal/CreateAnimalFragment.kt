@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -45,6 +46,10 @@ class CreateAnimalFragment : Fragment() {
         Timber.i("PRESSED")
         print("Pressed")
         setButtonListener(binding)
+        //onTextChange(binding)
+
+
+
         return root
     }
 
@@ -69,6 +74,7 @@ class CreateAnimalFragment : Fragment() {
         }
 
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
