@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.com.animalTracker.R
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
@@ -113,16 +113,14 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
         fragBinding.recyclerView.adapter = AnimalAdapter(animalList,this)
         if (animalList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
-            //fragBinding.donationsNotFound.visibility = View.VISIBLE
         } else {
             fragBinding.recyclerView.visibility = View.VISIBLE
-            //fragBinding.donationsNotFound.visibility = View.GONE
         }
     }
 
-    override fun onDonationClick(animal: AnimalModel) {
-        //val action = ReportFragmentDirections.actionReportFragmentToDonationDetailFragment(donation.id)
-        //findNavController().navigate(action)
+    override fun onAnimalClick(animal: AnimalModel) {
+        val action = AnimalListFragmentDirections.actionNavGalleryToAnimalDetails(animal.id)
+        findNavController().navigate(action)
     }
 
     override fun onResume() {

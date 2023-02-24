@@ -8,7 +8,7 @@ import org.com.animalTracker.databinding.CardAnimalBinding
 import org.com.animalTracker.models.AnimalModel
 
 interface AnimalClickListener {
-    fun onDonationClick(animal: AnimalModel)
+    fun onAnimalClick(animal: AnimalModel)
 }
 
 class AnimalAdapter constructor(private var animals: List<AnimalModel>,
@@ -32,8 +32,8 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
     }
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
-        val donation = animals[holder.adapterPosition]
-        holder.bind(donation,listener)
+        val animal = animals[holder.adapterPosition]
+        holder.bind(animal,listener)
     }
 
     override fun getItemCount(): Int = animals.size
@@ -43,9 +43,9 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
         fun bind(animal: AnimalModel, listener: AnimalClickListener) {
 
 
-            binding.speciesValue.text = animal.animalSpecies
+            binding.speciesValue.text = animal.animalName.toString()
             binding.imageIcon.setImageResource(R.mipmap.ic_launcher_round)
-            binding.root.setOnClickListener { listener.onDonationClick(animal) }
+            binding.root.setOnClickListener { listener.onAnimalClick(animal) }
             binding.executePendingBindings()
         }
     }

@@ -15,11 +15,33 @@
         android:id="@+id/nav_gallery"
         android:name="org.com.animalTracker.ui.AnimalList.AnimalListFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_animallist" />
+        tools:layout="@layout/fragment_animallist" >
+        <action
+            android:id="@+id/action_nav_gallery_to_animalDetails"
+            app:destination="@id/animalDetails" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="org.com.animalTracker.ui.createAnimal.CreateAnimalFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_createanimal" />
+        tools:layout="@layout/fragment_createanimal" >
+        <action
+            android:id="@+id/action_nav_slideshow_to_nav_gallery"
+            app:destination="@id/nav_gallery" />
+    </fragment>
+    <fragment
+        android:id="@+id/animalDetails"
+        android:name="org.com.animalTracker.ui.animalDetail.AnimalDetails"
+        android:label="fragment_animal_details"
+        tools:layout="@layout/fragment_animal_details" >
+        <action
+            android:id="@+id/action_animalDetails_to_nav_gallery"
+            app:destination="@id/nav_gallery" />
+        <argument
+            android:name="Animal"
+            app:argType="long"
+             />
+    </fragment>
 </navigation>
