@@ -1,5 +1,7 @@
 package org.com.animalTracker.ui.home
 
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.android.volley.BuildConfig
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -17,6 +20,8 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
+import java.util.Properties
 
 
 class HomeFragment : Fragment() {
@@ -28,6 +33,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private var mRequestQueue: RequestQueue? = null
     private var stringRequest: StringRequest? = null
+    private var apikey = activity?.applicationContext?.applicationInfo?.metaData.toString()
     private val url = "https://api.api-ninjas.com/v1/animals?name=dog"
 
     override fun onCreateView(
@@ -38,6 +44,8 @@ class HomeFragment : Fragment() {
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
+
+        Timber.i("APIKEY"+apikey)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -67,12 +75,13 @@ class HomeFragment : Fragment() {
         {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                headers["x-api-key"] = "79qFpzBqdJ2QnmWDAa2hCw==re8i97z6KmQmpBIA"
+
+
+                headers["x-api-key"] =org.com.animalTracker.BuildConfig.APIKEY
+
                 return headers
             }
-
         }
-        //var obj = JSONObject(stringRequest)
         mRequestQueue!!.add(stringRequest)
 
     }

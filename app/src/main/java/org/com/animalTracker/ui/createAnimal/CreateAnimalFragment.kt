@@ -34,7 +34,7 @@ class CreateAnimalFragment : Fragment() {
     private lateinit var createAnimalViewModel: CreateAnimalViewModel
     private var mRequestQueue: RequestQueue? = null
     private var mStringRequest: StringRequest? = null
-    private val url = "https://api.api-ninjas.com/v1/animals?name=cheetah"
+    private val url = "https://api.api-ninjas.com/v1/animals?name="
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

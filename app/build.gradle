@@ -17,6 +17,11 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
+        Properties propert = new Properties()
+
+        propert.load(project.rootProject.file('local.properties').newDataInputStream())
+        manifestPlaceholders = [APIKEY: "${propert.getProperty('APIKEY')}"]
+        buildConfigField("String","APIKEY",propert['APIKEY'])
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,6 +30,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
     }
     compileOptions {
