@@ -12,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import org.com.animalTracker.databinding.HomeBinding
 import org.com.animalTracker.ui.home.HomeFragment
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -20,7 +21,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Timber.plant(Timber.DebugTree())
+        //animalStorage = AnimalStorage()
+        Timber.i("Animal Tracker Application Started")
         homeBinding = HomeBinding.inflate(layoutInflater)
         setContentView(homeBinding.root)
         drawerLayout = homeBinding.drawerLayout

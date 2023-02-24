@@ -1,4 +1,4 @@
-package org.com.animalTracker.ui.createAnimal
+package org.com.animalTracker.ui.animalDetail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,27 +6,28 @@ import androidx.lifecycle.ViewModel
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.AnimalStorage
 
-class CreateAnimalViewModel : ViewModel() {
-
+class AnimalDetailsViewModel : ViewModel() {
     private val status = MutableLiveData<Boolean>()
-
     val observableStatus: LiveData<Boolean>
         get() = status
-
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is slideshow Fragment"
-    }
-
-    val text: LiveData<String> = _text
-
-    fun addAnimal(animal: AnimalModel)
+    fun removeAnimal(animal: AnimalModel)
     {
         status.value = try {
-            AnimalStorage.create(animal)
+            AnimalStorage.delete(animal)
             true
         } catch (e:IllegalArgumentException){
             false
         }
 
+    }
+
+    fun updateAnimal(animal: AnimalModel)
+    {
+        status.value = try{
+            AnimalStorage.update(animal)
+            true
+        } catch (e:IllegalArgumentException){
+        false
+    }
     }
 }

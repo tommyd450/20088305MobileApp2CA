@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AnimalModel(var id: Long = 0,
-                         val animalSpecies: String = "N/A",
-                         val animalName : String = "",
-                         val region: String = "Earth") : Parcelable
+                       var animalSpecies: String = "N/A",
+                       var animalName : String = "",
+                       var region: String = "Earth") : Parcelable
