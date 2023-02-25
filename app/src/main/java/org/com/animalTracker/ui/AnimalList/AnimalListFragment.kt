@@ -93,7 +93,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
             // at last we are passing that filtered
             // list to our adapter class.
             var adp: AnimalAdapter = AnimalAdapter(AnimalStorage.findAll(),this)
-            adp.filterList(filteredlist)
+            //adp.filterList(filteredlist)
             render(filteredlist)
         }
     }

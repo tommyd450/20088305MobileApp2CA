@@ -1,15 +1,14 @@
 package org.com.animalTracker.ui.home
 
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.android.volley.BuildConfig
+import androidx.navigation.fragment.findNavController
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -17,14 +16,17 @@ import com.android.volley.toolbox.Volley
 import org.com.animalTracker.databinding.FragmentHomeBinding
 import timber.log.Timber
 import kotlinx.serialization.*
-import kotlinx.serialization.json.Json
+import org.com.animalTracker.adapters.AnimalAdapter
+import org.com.animalTracker.adapters.AnimalClickListener
+import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.models.TempStore
+import org.com.animalTracker.ui.AnimalList.AnimalListFragmentDirections
 import org.json.JSONArray
-import org.json.JSONObject
-import java.io.File
+import org.json.JSONException
 import java.util.Properties
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), AnimalClickListener {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -33,31 +35,58 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private var mRequestQueue: RequestQueue? = null
     private var stringRequest: StringRequest? = null
-    private var apikey = activity?.applicationContext?.applicationInfo?.metaData.toString()
-    private val url = "https://api.api-ninjas.com/v1/animals?name=dog"
+    lateinit var homeViewModel : HomeViewModel
+    private val url = "https://api.api-ninjas.com/v1/animals?name="
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
+        homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
 
-        Timber.i("APIKEY"+apikey)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
         //val textView: TextView = binding.textHome
         //homeViewModel.text.observe(viewLifecycleOwner) {
          //   textView.text = it
         //}
-        getData()
+
+        homeViewModel =
+            ViewModelProvider(this).get(HomeViewModel::class.java)
+        homeViewModel.observableAnimalList.observe(viewLifecycleOwner, Observer {
+                status -> status?.let { render(status) }
+        })
+        homeViewModel.text.observe(viewLifecycleOwner) {
+            //textView.text = it
+        }
+
+        val searchView: SearchView = binding.animalSearch
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                TempStore.tanimals.clear()
+                getData(binding.animalSearch.query.toString())
+
+
+                return false
+            }
+
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                // inside on query text change method we are
+                // calling a method to filter our recycler view.
+                Timber.i("SearchAttempt")
+                //filter(newText)
+                return false
+            }
+        })
         return root
     }
 
-    private fun getData() {
+    private fun getData(name:String) {
         // RequestQueue initialized
         mRequestQueue = Volley.newRequestQueue(activity?.applicationContext )
 
@@ -65,11 +94,33 @@ class HomeFragment : Fragment() {
 
 
         val stringRequest = object: StringRequest(
-            Method.GET, url,
+            Method.GET, url+name,
             Response.Listener<String> { response ->
-                Timber.i("Response is: " + response.substring(0,500))
-               var obj =  JSONArray(response.toString())
-                Timber.i("Test : "+obj[2])
+
+                    Timber.i("Response is: " + response.toString())
+                    var obj = JSONArray(response)
+                    for (i in 0 until obj.length()) {
+                        Timber.i(obj.getJSONObject(i).getString("name"))
+                        var species :String = ""
+                        var name : String = ""
+                        var region :  String = ""
+                        try {
+
+                            region =  obj.getJSONObject(i).getString("locations")
+                            species  = obj.getJSONObject(i).getJSONObject("taxonomy").getString("scientific_name")
+                            name  = obj.getJSONObject(i).getString("name")
+
+                        } catch (e: JSONException)
+                        {
+
+                        }
+
+                        TempStore.create(AnimalModel(animalName = name,
+                            region = region,
+                            animalSpecies = species))
+                        render(TempStore.findAll())
+                    }
+
             },
             Response.ErrorListener { Timber.i("Nope didnt Work") })
         {
@@ -84,6 +135,20 @@ class HomeFragment : Fragment() {
         }
         mRequestQueue!!.add(stringRequest)
 
+    }
+
+    private fun render(animalList: List<AnimalModel>) {
+        binding.recyclerView2.adapter = AnimalAdapter(animalList,this)
+        if (animalList.isEmpty()) {
+            binding.recyclerView2.visibility = View.GONE
+        } else {
+            binding.recyclerView2.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onAnimalClick(animal: AnimalModel) {
+        val action = AnimalListFragmentDirections.actionNavGalleryToAnimalDetails(animal.id)
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {
