@@ -19,6 +19,7 @@ import timber.log.Timber
 import kotlinx.serialization.*
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
+import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.AnimalStorage
 import org.com.animalTracker.models.TempStore
@@ -152,7 +153,7 @@ class HomeFragment : Fragment(), AnimalClickListener {
     }
 
     override fun onAnimalClick(animal: AnimalModel) {
-        AnimalStorage.create(animal)
+        AnimalJSONStore.create(animal)
         //val action = HomeFragmentDirections.actionNavHomeToNavGallery()
         //findNavController().navigate(action)
 
@@ -160,7 +161,7 @@ class HomeFragment : Fragment(), AnimalClickListener {
 
     override fun onResume() {
         super.onResume()
-        homeViewModel.load()
+        //homeViewModel.load()
     }
 
     override fun onDestroyView() {

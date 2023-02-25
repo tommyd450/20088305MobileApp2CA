@@ -15,6 +15,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
+import org.com.animalTracker.models.AnimalJSONStore
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +26,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AnimalJSONStore.context = applicationContext
+        AnimalJSONStore.init()
         Timber.plant(Timber.DebugTree())
         //animalStorage = AnimalStorage()
         Timber.i("Animal Tracker Application Started")

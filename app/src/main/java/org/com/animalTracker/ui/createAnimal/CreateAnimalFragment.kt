@@ -23,10 +23,11 @@ import org.com.animalTracker.models.AnimalModel
 import timber.log.Timber
 import com.android.volley.VolleyError;
 import org.com.animalTracker.activities.MainActivity
+import org.com.animalTracker.main.App
 
 
 class CreateAnimalFragment : Fragment() {
-
+    lateinit var app : App
     private var _binding: FragmentCreateanimalBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.

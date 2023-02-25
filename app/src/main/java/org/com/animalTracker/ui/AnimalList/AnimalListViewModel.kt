@@ -3,6 +3,7 @@ package org.com.animalTracker.ui.AnimalList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.AnimalStorage
 
@@ -20,7 +21,7 @@ class AnimalListViewModel : ViewModel() {
 
     fun load()
     {
-        animalList.value = AnimalStorage.findAll()
+        animalList.value = AnimalJSONStore.findAll()
     }
 
     private val _text = MutableLiveData<String>().apply {

@@ -44,6 +44,7 @@ object AnimalStorage : AnimalStoreInterface {
             found.animalName = animal.animalName
             found.animalSpecies = animal.animalSpecies
             found.region = animal.region
+            found.diet = animal.diet
             logAll()
         }
     }

@@ -16,6 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
+import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.AnimalStorage
 import timber.log.Timber
@@ -76,7 +77,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
         val filteredlist: ArrayList<AnimalModel> = ArrayList()
 
         // running a for loop to compare elements.
-        for (item in AnimalStorage.animals) {
+        for (item in AnimalJSONStore.animals) {
             // checking if the entered string matched with any item of our recycler view.
             if (item.animalName.toLowerCase().contains(text.toLowerCase())) {
                 // if the item is matched we are
@@ -92,7 +93,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
         } else {
             // at last we are passing that filtered
             // list to our adapter class.
-            var adp: AnimalAdapter = AnimalAdapter(AnimalStorage.findAll(),this)
+            var adp: AnimalAdapter = AnimalAdapter(AnimalJSONStore.findAll(),this)
             //adp.filterList(filteredlist)
             render(filteredlist)
         }
