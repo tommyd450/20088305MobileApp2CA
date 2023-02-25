@@ -1,17 +1,21 @@
 package org.com.animalTracker.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import org.com.animalTracker.R
 import androidx.navigation.*
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import com.android.volley.AuthFailureError
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
-import org.com.animalTracker.ui.home.HomeFragment
+import org.com.animalTracker.models.AnimalJSONStore
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -19,8 +23,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var homeBinding : HomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AnimalJSONStore.context = applicationContext
+        AnimalJSONStore.init()
         Timber.plant(Timber.DebugTree())
         //animalStorage = AnimalStorage()
         Timber.i("Animal Tracker Application Started")
@@ -39,9 +46,9 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(setOf(
             R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
-
         val navView = homeBinding.navView
         navView.setupWithNavController(navController)
+
     }
 
 
@@ -49,4 +56,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+
+
 }

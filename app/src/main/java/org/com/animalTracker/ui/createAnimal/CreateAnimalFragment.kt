@@ -1,30 +1,45 @@
 package org.com.animalTracker.ui.createAnimal
 
+import android.content.ContentValues
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import org.com.animalTracker.databinding.FragmentCreateanimalBinding
 import org.com.animalTracker.models.AnimalModel
 import timber.log.Timber
+import com.android.volley.VolleyError;
+import org.com.animalTracker.activities.MainActivity
+import org.com.animalTracker.main.App
+
 
 class CreateAnimalFragment : Fragment() {
-
+    lateinit var app : App
     private var _binding: FragmentCreateanimalBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var createAnimalViewModel: CreateAnimalViewModel
+    private var mRequestQueue: RequestQueue? = null
+    private var mStringRequest: StringRequest? = null
+    private val url = "https://api.api-ninjas.com/v1/animals?name="
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mRequestQueue = Volley.newRequestQueue(activity)
 
     }
 
@@ -46,6 +61,7 @@ class CreateAnimalFragment : Fragment() {
         Timber.i("PRESSED")
         print("Pressed")
         setButtonListener(binding)
+
         //onTextChange(binding)
 
 
@@ -74,6 +90,8 @@ class CreateAnimalFragment : Fragment() {
         }
 
     }
+
+
 
 
     override fun onDestroyView() {

@@ -41,7 +41,7 @@ class AnimalDetails : Fragment() {
         fragBinding.editAnimalName.setText(AnimalStorage.findById(args.animal)?.animalName)
         fragBinding.editAnimalSpecies.setText(AnimalStorage.findById(args.animal)?.animalSpecies)
         fragBinding.editAnimalRegion.setText(AnimalStorage.findById(args.animal)?.region)
-
+        fragBinding.editAnimalDiet.setText(AnimalStorage.findById(args.animal)?.diet)
         viewModel = ViewModelProvider(this).get(AnimalDetailsViewModel::class.java)
         Timber.i("PRESSED")
         print("Pressed")
@@ -68,10 +68,11 @@ class AnimalDetails : Fragment() {
             findNavController().navigate(action)
         }
         layout.confirmUpdate.setOnClickListener{
-            var an: AnimalModel = AnimalModel(
+            var an = AnimalModel(
                 animalName = layout.editAnimalName.text.toString(),
                 animalSpecies = layout.editAnimalSpecies.text.toString(),
-                region = layout.editAnimalRegion.text.toString() )
+                region = layout.editAnimalRegion.text.toString(),
+                diet = layout.editAnimalDiet.text.toString())
             viewModel.updateAnimal(an as AnimalModel)
             val action = AnimalDetailsDirections.actionAnimalDetailsToNavGallery()
             findNavController().navigate(action)
