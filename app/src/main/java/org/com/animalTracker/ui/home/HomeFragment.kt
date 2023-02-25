@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -33,6 +34,7 @@ class HomeFragment : Fragment(), AnimalClickListener {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
     private var mRequestQueue: RequestQueue? = null
     private var stringRequest: StringRequest? = null
     lateinit var homeViewModel : HomeViewModel
@@ -49,6 +51,7 @@ class HomeFragment : Fragment(), AnimalClickListener {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        binding.recyclerView2.layoutManager = LinearLayoutManager(activity)
         //val textView: TextView = binding.textHome
         //homeViewModel.text.observe(viewLifecycleOwner) {
          //   textView.text = it
@@ -57,7 +60,7 @@ class HomeFragment : Fragment(), AnimalClickListener {
         homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
         homeViewModel.observableAnimalList.observe(viewLifecycleOwner, Observer {
-                status -> status?.let { render(status) }
+                animals -> animals?.let { render(animals) }
         })
         homeViewModel.text.observe(viewLifecycleOwner) {
             //textView.text = it
