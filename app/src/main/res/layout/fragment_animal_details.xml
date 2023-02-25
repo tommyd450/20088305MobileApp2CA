@@ -108,5 +108,27 @@
         app:layout_constraintVertical_bias="0.056"
         android:text=""/>
 
+    <EditText
+        android:id="@+id/editAnimalDiet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.661"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editAnimalSpecies"
+        app:layout_constraintVertical_bias="0.238" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Diet:"
+        tools:layout_editor_absoluteX="68dp"
+        tools:layout_editor_absoluteY="406dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

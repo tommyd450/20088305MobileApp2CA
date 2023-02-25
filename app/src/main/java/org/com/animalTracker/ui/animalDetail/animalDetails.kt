@@ -68,7 +68,7 @@ class AnimalDetails : Fragment() {
             findNavController().navigate(action)
         }
         layout.confirmUpdate.setOnClickListener{
-            var an: AnimalModel = AnimalModel(
+            var an = AnimalModel(
                 animalName = layout.editAnimalName.text.toString(),
                 animalSpecies = layout.editAnimalSpecies.text.toString(),
                 region = layout.editAnimalRegion.text.toString() )

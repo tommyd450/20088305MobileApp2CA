@@ -20,6 +20,7 @@ import kotlinx.serialization.*
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
 import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.models.AnimalStorage
 import org.com.animalTracker.models.TempStore
 import org.com.animalTracker.ui.AnimalList.AnimalListFragmentDirections
 import org.json.JSONArray
@@ -62,9 +63,7 @@ class HomeFragment : Fragment(), AnimalClickListener {
         homeViewModel.observableAnimalList.observe(viewLifecycleOwner, Observer {
                 animals -> animals?.let { render(animals) }
         })
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            //textView.text = it
-        }
+
 
         val searchView: SearchView = binding.animalSearch
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -107,11 +106,13 @@ class HomeFragment : Fragment(), AnimalClickListener {
                         var species :String = ""
                         var name : String = ""
                         var region :  String = ""
+                        var diet : String = "Unknown"
                         try {
 
                             region =  obj.getJSONObject(i).getString("locations")
                             species  = obj.getJSONObject(i).getJSONObject("taxonomy").getString("scientific_name")
                             name  = obj.getJSONObject(i).getString("name")
+                            diet = obj.getJSONObject(i).getJSONObject("characteristics").getString("diet")
 
                         } catch (e: JSONException)
                         {
@@ -120,7 +121,8 @@ class HomeFragment : Fragment(), AnimalClickListener {
 
                         TempStore.create(AnimalModel(animalName = name,
                             region = region,
-                            animalSpecies = species))
+                            animalSpecies = species,
+                            diet = diet ))
                         render(TempStore.findAll())
                     }
 
@@ -150,8 +152,15 @@ class HomeFragment : Fragment(), AnimalClickListener {
     }
 
     override fun onAnimalClick(animal: AnimalModel) {
-        val action = AnimalListFragmentDirections.actionNavGalleryToAnimalDetails(animal.id)
-        findNavController().navigate(action)
+        AnimalStorage.create(animal)
+        //val action = HomeFragmentDirections.actionNavHomeToNavGallery()
+        //findNavController().navigate(action)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        homeViewModel.load()
     }
 
     override fun onDestroyView() {

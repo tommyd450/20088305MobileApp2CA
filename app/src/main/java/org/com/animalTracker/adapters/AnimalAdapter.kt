@@ -43,8 +43,10 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
         fun bind(animal: AnimalModel, listener: AnimalClickListener) {
 
 
-            binding.nameValue.text = animal.animalName
-            binding.speciesValue.text = animal.animalSpecies
+            binding.speciesValue.text= animal.animalName.toString()
+            binding.scNameValue.text = animal.animalSpecies.toString()
+            binding.animalDiet.text = animal.diet.toString()
+            binding.regionValue.text = animal.region.toString()
             //binding.imageIcon.setImageResource(R.mipmap.ic_launcher_round)
             binding.root.setOnClickListener { listener.onAnimalClick(animal) }
             binding.executePendingBindings()
