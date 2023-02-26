@@ -13,6 +13,7 @@ import org.com.animalTracker.R
 import org.com.animalTracker.databinding.FragmentAnimalDetailsBinding
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
 import org.com.animalTracker.databinding.FragmentCreateanimalBinding
+import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.AnimalStorage
 import org.com.animalTracker.ui.AnimalList.AnimalListFragment
@@ -36,12 +37,12 @@ class AnimalDetails : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
+        Timber.i("Args"+AnimalJSONStore.findById(args.animal)?.toString())
         _fragBinding = FragmentAnimalDetailsBinding.inflate(inflater, container, false)
-        fragBinding.editAnimalName.setText(AnimalStorage.findById(args.animal)?.animalName)
-        fragBinding.editAnimalSpecies.setText(AnimalStorage.findById(args.animal)?.animalSpecies)
-        fragBinding.editAnimalRegion.setText(AnimalStorage.findById(args.animal)?.region)
-        fragBinding.editAnimalDiet.setText(AnimalStorage.findById(args.animal)?.diet)
+        fragBinding.editNameField.setText(AnimalJSONStore.findById(args.animal)?.animalName)
+        fragBinding.editSpeciesField.setText(AnimalJSONStore.findById(args.animal)?.animalSpecies)
+        fragBinding.editRegionField.setText(AnimalJSONStore.findById(args.animal)?.region)
+        fragBinding.editDietField.setText(AnimalJSONStore.findById(args.animal)?.diet)
         viewModel = ViewModelProvider(this).get(AnimalDetailsViewModel::class.java)
         Timber.i("PRESSED")
         print("Pressed")
@@ -62,18 +63,19 @@ class AnimalDetails : Fragment() {
     {
         Timber.i("PRESSED")
         layout.confirmDelete.setOnClickListener{
-            var an: AnimalModel? = AnimalStorage.findById(args.animal)
+            var an: AnimalModel? = AnimalJSONStore.findById(args.animal)
             viewModel.removeAnimal(an as AnimalModel)
             val action = AnimalDetailsDirections.actionAnimalDetailsToNavGallery()
             findNavController().navigate(action)
         }
         layout.confirmUpdate.setOnClickListener{
             var an = AnimalModel(
-                animalName = layout.editAnimalName.text.toString(),
-                animalSpecies = layout.editAnimalSpecies.text.toString(),
-                region = layout.editAnimalRegion.text.toString(),
-                diet = layout.editAnimalDiet.text.toString())
-            viewModel.updateAnimal(an as AnimalModel)
+                id = args.animal,
+                animalName = layout.editNameField.text.toString(),
+                animalSpecies = layout.editSpeciesField.text.toString(),
+                region = layout.editRegionField.text.toString(),
+                diet = layout.editDietField.text.toString())
+            viewModel.updateAnimal(an )
             val action = AnimalDetailsDirections.actionAnimalDetailsToNavGallery()
             findNavController().navigate(action)
         }
