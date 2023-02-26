@@ -4,10 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.com.animalTracker.models.AnimalModel
-import org.com.animalTracker.models.AnimalStorage
 import org.com.animalTracker.models.TempStore
 
-class HomeViewModel : ViewModel() {
+class QuickAddViewModel : ViewModel() {
 
 
     private val animalList = MutableLiveData<List<AnimalModel>>()
