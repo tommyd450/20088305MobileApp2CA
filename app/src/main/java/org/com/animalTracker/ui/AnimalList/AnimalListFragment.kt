@@ -47,11 +47,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
             animals?.let { render(animals) }
         })
 
-        /*val fab: FloatingActionButton = fragBinding.fab
-        fab.setOnClickListener {
-            val action = ReportFragmentDirections.actionReportFragmentToDonateFragment()
-            findNavController().navigate(action)
-        }*/
+
         val searchView: SearchView = fragBinding.animalSearch
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
