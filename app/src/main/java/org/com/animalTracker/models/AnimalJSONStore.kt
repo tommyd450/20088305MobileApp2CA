@@ -42,7 +42,7 @@ object AnimalJSONStore : AnimalStoreInterface {
     }
 
     override fun findById(id: Long): AnimalModel? {
-        val foundAnimal: AnimalModel? = AnimalStorage.animals.find { it.id == id }
+        val foundAnimal: AnimalModel? = AnimalJSONStore.animals.find { it.id == id }
         return foundAnimal
     }
 
@@ -58,6 +58,7 @@ object AnimalJSONStore : AnimalStoreInterface {
     override fun update(animal: AnimalModel) {
         var foundAnimal: AnimalModel? = animals.find { p -> p.id == animal.id }
         if (foundAnimal != null) {
+            Timber.i("Updated")
             foundAnimal.animalName = animal.animalName
             foundAnimal.animalSpecies = animal.animalSpecies
             foundAnimal.region = animal.region

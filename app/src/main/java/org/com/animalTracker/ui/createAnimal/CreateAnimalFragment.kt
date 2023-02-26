@@ -48,7 +48,7 @@ class CreateAnimalFragment : Fragment() {
 
         _binding = FragmentCreateanimalBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val textView: TextView = binding.textSlideshow
+        //val textView: TextView = binding.textSlideshow
 
         createAnimalViewModel =
             ViewModelProvider(this).get(CreateAnimalViewModel::class.java)
@@ -56,7 +56,7 @@ class CreateAnimalFragment : Fragment() {
                 status -> status?.let { render(status) }
         })
         createAnimalViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+            //textView.text = it
         }
         Timber.i("PRESSED")
         print("Pressed")
@@ -84,9 +84,11 @@ class CreateAnimalFragment : Fragment() {
     fun setButtonListener(layout: FragmentCreateanimalBinding)
     {
         Timber.i("PRESSED")
-        layout.createButton.setOnClickListener{
-            layout.nameField.text
-            createAnimalViewModel.addAnimal(AnimalModel(animalSpecies = layout.speciesField.text.toString(), animalName = layout.nameField.text.toString(), region = layout.regionField.text.toString()))
+        layout.confirmCreate.setOnClickListener{
+
+            createAnimalViewModel.addAnimal(AnimalModel(animalSpecies = layout.speciesField.text.toString(),
+                animalName = layout.nameField.text.toString(), region = layout.regionField.text.toString(),
+                diet = layout.dietField.text.toString() ))
         }
 
     }

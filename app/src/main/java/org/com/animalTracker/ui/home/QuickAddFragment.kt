@@ -8,7 +8,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -16,20 +15,16 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.com.animalTracker.databinding.FragmentHomeBinding
 import timber.log.Timber
-import kotlinx.serialization.*
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
 import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.models.AnimalModel
-import org.com.animalTracker.models.AnimalStorage
 import org.com.animalTracker.models.TempStore
-import org.com.animalTracker.ui.AnimalList.AnimalListFragmentDirections
 import org.json.JSONArray
 import org.json.JSONException
-import java.util.Properties
 
 
-class HomeFragment : Fragment(), AnimalClickListener {
+class QuickAddFragment : Fragment(), AnimalClickListener {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -39,7 +34,7 @@ class HomeFragment : Fragment(), AnimalClickListener {
 
     private var mRequestQueue: RequestQueue? = null
     private var stringRequest: StringRequest? = null
-    lateinit var homeViewModel : HomeViewModel
+    lateinit var quickAddViewModel : QuickAddViewModel
     private val url = "https://api.api-ninjas.com/v1/animals?name="
 
     override fun onCreateView(
@@ -47,21 +42,21 @@ class HomeFragment : Fragment(), AnimalClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        quickAddViewModel =
+            ViewModelProvider(this).get(QuickAddViewModel::class.java)
 
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         binding.recyclerView2.layoutManager = LinearLayoutManager(activity)
         //val textView: TextView = binding.textHome
-        //homeViewModel.text.observe(viewLifecycleOwner) {
+        //quickAddViewModel.text.observe(viewLifecycleOwner) {
          //   textView.text = it
         //}
 
-        homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-        homeViewModel.observableAnimalList.observe(viewLifecycleOwner, Observer {
+        quickAddViewModel =
+            ViewModelProvider(this).get(QuickAddViewModel::class.java)
+        quickAddViewModel.observableAnimalList.observe(viewLifecycleOwner, Observer {
                 animals -> animals?.let { render(animals) }
         })
 
@@ -161,7 +156,7 @@ class HomeFragment : Fragment(), AnimalClickListener {
 
     override fun onResume() {
         super.onResume()
-        //homeViewModel.load()
+        //quickAddViewModel.load()
     }
 
     override fun onDestroyView() {

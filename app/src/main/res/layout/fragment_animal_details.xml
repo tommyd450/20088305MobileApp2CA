@@ -67,12 +67,12 @@
         app:layout_constraintVertical_bias="0.79" />
 
     <EditText
-        android:id="@+id/editAnimalName"
+        android:id="@+id/editNameField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editAnimalSpecies"
+        app:layout_constraintBottom_toTopOf="@+id/speciesField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.661"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,7 +81,7 @@
         android:text=""/>
 
     <EditText
-        android:id="@+id/editAnimalSpecies"
+        android:id="@+id/editSpeciesField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -95,7 +95,7 @@
         android:text=""/>
 
     <EditText
-        android:id="@+id/editAnimalRegion"
+        android:id="@+id/editRegionField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -104,12 +104,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.661"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editAnimalSpecies"
+        app:layout_constraintTop_toBottomOf="@+id/editSpeciesField"
         app:layout_constraintVertical_bias="0.056"
         android:text=""/>
 
     <EditText
-        android:id="@+id/editAnimalDiet"
+        android:id="@+id/editDietField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -119,7 +119,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.661"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editAnimalSpecies"
+        app:layout_constraintTop_toBottomOf="@+id/editSpeciesField"
         app:layout_constraintVertical_bias="0.238" />
 
     <TextView
@@ -129,7 +129,7 @@
         android:text="Diet:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.172"
+        app:layout_constraintHorizontal_bias="0.174"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.55" />
