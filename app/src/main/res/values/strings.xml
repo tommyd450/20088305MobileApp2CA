@@ -11,4 +11,14 @@
     <string name="menu_quickadd">Quick Add</string>
     <string name="menu_gallery">Saved Animal List</string>
     <string name="menu_slideshow">Create Custom Animal Entry</string>
+
+
+    <!--Auth Related Strings-->
+    <string name="auth_email">Existing Email:</string>
+    <string name="auth_password">Password:</string>
+    <string name="auth_enterEmail">Enter Email Here</string>
+    <string name="auth_enterPassword">Enter Email Here</string>
+    <string name="auth_login">Login</string>
+    <string name="auth_createAccount">Create Account</string>
+
 </resources>
