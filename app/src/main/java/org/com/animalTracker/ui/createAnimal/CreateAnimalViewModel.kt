@@ -3,9 +3,13 @@ package org.com.animalTracker.ui.createAnimal
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import org.com.animalTracker.models.AnimalJSONStore
+import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.auth.FirebaseUser
+
 import org.com.animalTracker.models.AnimalModel
-import org.com.animalTracker.models.AnimalStorage
+
+import org.com.animalTracker.models.FirebaseDBManager
+import org.com.animalTracker.ui.auth.LoggedInViewModel
 
 class CreateAnimalViewModel : ViewModel() {
 
@@ -20,10 +24,12 @@ class CreateAnimalViewModel : ViewModel() {
 
     val text: LiveData<String> = _text
 
-    fun addAnimal(animal: AnimalModel)
+    fun addAnimal(firebaseUser: MutableLiveData<FirebaseUser>,animal: AnimalModel)
     {
+
         status.value = try {
-            AnimalJSONStore.create(animal)
+            //AnimalJSONStore.create(animal)
+            FirebaseDBManager.create(firebaseUser,animal)
             true
         } catch (e:IllegalArgumentException){
             false

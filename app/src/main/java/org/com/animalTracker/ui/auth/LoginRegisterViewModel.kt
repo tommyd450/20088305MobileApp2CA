@@ -11,10 +11,10 @@ import org.com.animalTracker.databinding.HomeBinding
 import org.com.animalTracker.databinding.NavHeaderNavBinding
 import org.com.animalTracker.firebase.FirebaseAuthManager
 
-class LoginRegisterViewModel(application: Application) : AndroidViewModel(application) {
-    var firebaseAuthManager : FirebaseAuthManager = FirebaseAuthManager(application)
-    var liveFirebaseUser : MutableLiveData<FirebaseUser> = firebaseAuthManager.liveFirebaseUser
+class LoginRegisterViewModel (app: Application) : AndroidViewModel(app) {
 
+    var firebaseAuthManager : FirebaseAuthManager = FirebaseAuthManager(app)
+    var liveFirebaseUser : MutableLiveData<FirebaseUser> = firebaseAuthManager.liveFirebaseUser
 
     fun login(email: String?, password: String?) {
         firebaseAuthManager.login(email, password)
@@ -23,11 +23,4 @@ class LoginRegisterViewModel(application: Application) : AndroidViewModel(applic
     fun register(email: String?, password: String?) {
         firebaseAuthManager.register(email, password)
     }
-
-    fun logout()
-    {
-        firebaseAuthManager.logOut()
-    }
-
-
 }

@@ -17,9 +17,9 @@ import org.com.animalTracker.databinding.FragmentHomeBinding
 import timber.log.Timber
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
-import org.com.animalTracker.models.AnimalJSONStore
+
 import org.com.animalTracker.models.AnimalModel
-import org.com.animalTracker.models.TempStore
+
 import org.json.JSONArray
 import org.json.JSONException
 
@@ -65,7 +65,7 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
-                TempStore.tanimals.clear()
+                //TempStore.tanimals.clear()
                 getData(binding.animalSearch.query.toString())
 
 
@@ -115,11 +115,11 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
 
                         }
 
-                        TempStore.create(AnimalModel(animalName = name,
-                            region = region,
-                            animalSpecies = species,
-                            diet = diet ))
-                        render(TempStore.findAll())
+                        //TempStore.create(AnimalModel(animalName = name,
+                            //region = region,
+                            ///animalSpecies = species,
+                            //diet = diet ))
+                        //render(TempStore.findAll())
                     }
 
             },
@@ -148,7 +148,7 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
     }
 
     override fun onAnimalClick(animal: AnimalModel) {
-        AnimalJSONStore.create(animal)
+        //AnimalJSONStore.create(animal)
         //val action = HomeFragmentDirections.actionNavHomeToNavGallery()
         //findNavController().navigate(action)
 

@@ -1,4 +1,4 @@
-package org.com.animalTracker.models
+/*package org.com.animalTracker.models
 
 import timber.log.Timber
 
@@ -89,3 +89,4 @@ object TempStore
         }
     }
 }
+*/

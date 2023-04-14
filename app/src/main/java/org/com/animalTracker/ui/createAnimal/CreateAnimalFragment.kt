@@ -24,6 +24,7 @@ import timber.log.Timber
 import com.android.volley.VolleyError;
 import org.com.animalTracker.activities.MainActivity
 import org.com.animalTracker.main.App
+import org.com.animalTracker.ui.auth.LoggedInViewModel
 
 
 class CreateAnimalFragment : Fragment() {
@@ -35,6 +36,7 @@ class CreateAnimalFragment : Fragment() {
     private lateinit var createAnimalViewModel: CreateAnimalViewModel
     private var mRequestQueue: RequestQueue? = null
     private var mStringRequest: StringRequest? = null
+    private lateinit var loggedInViewModel : LoggedInViewModel
     private val url = "https://api.api-ninjas.com/v1/animals?name="
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,10 +85,11 @@ class CreateAnimalFragment : Fragment() {
 
     fun setButtonListener(layout: FragmentCreateanimalBinding)
     {
+        loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         Timber.i("PRESSED")
         layout.confirmCreate.setOnClickListener{
 
-            createAnimalViewModel.addAnimal(AnimalModel(animalSpecies = layout.speciesField.text.toString(),
+            createAnimalViewModel.addAnimal(loggedInViewModel.liveFirebaseUser,AnimalModel(animalSpecies = layout.speciesField.text.toString(),
                 animalName = layout.nameField.text.toString(), region = layout.regionField.text.toString(),
                 diet = layout.dietField.text.toString() ))
         }

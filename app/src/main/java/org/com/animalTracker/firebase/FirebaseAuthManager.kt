@@ -22,7 +22,6 @@ class FirebaseAuthManager(application: Application) {
     var loggedOut = MutableLiveData<Boolean>()
     var errorStatus = MutableLiveData<Boolean>()
 
-
     init {
         this.application = application
         firebaseAuth = FirebaseAuth.getInstance()
@@ -36,34 +35,28 @@ class FirebaseAuthManager(application: Application) {
 
     fun login(email: String?, password: String?) {
         firebaseAuth!!.signInWithEmailAndPassword(email!!, password!!)
-            .addOnCompleteListener(application!!.mainExecutor) { task ->
+            .addOnCompleteListener(application!!.mainExecutor, { task ->
                 if (task.isSuccessful) {
                     liveFirebaseUser.postValue(firebaseAuth!!.currentUser)
-                    loggedOut.postValue(false)
                     errorStatus.postValue(false)
-                    Timber.i("LOGIN SUCCESS")
-
-
                 } else {
-                    Timber.i(""+email+" "+password+" ")
-                    Timber.i("Login Failure: $task.exception!!.message")
+                    Timber.i( "Login Failure: $task.exception!!.message")
                     errorStatus.postValue(true)
                 }
-            }
+            })
     }
 
     fun register(email: String?, password: String?) {
         firebaseAuth!!.createUserWithEmailAndPassword(email!!, password!!)
-            .addOnCompleteListener(application!!.mainExecutor) { task ->
+            .addOnCompleteListener(application!!.mainExecutor, { task ->
                 if (task.isSuccessful) {
                     liveFirebaseUser.postValue(firebaseAuth!!.currentUser)
                     errorStatus.postValue(false)
-
                 } else {
-                    Timber.i("Registration Failure: $task.exception!!.message")
+                    Timber.i( "Registration Failure: $task.exception!!.message")
                     errorStatus.postValue(true)
                 }
-            }
+            })
     }
 
     fun logOut() {
@@ -71,8 +64,4 @@ class FirebaseAuthManager(application: Application) {
         loggedOut.postValue(true)
         errorStatus.postValue(false)
     }
-
-
-
-
 }

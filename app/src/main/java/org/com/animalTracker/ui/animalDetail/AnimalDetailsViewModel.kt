@@ -3,9 +3,9 @@ package org.com.animalTracker.ui.animalDetail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import org.com.animalTracker.models.AnimalJSONStore
+
 import org.com.animalTracker.models.AnimalModel
-import org.com.animalTracker.models.AnimalStorage
+
 
 class AnimalDetailsViewModel : ViewModel() {
     private val status = MutableLiveData<Boolean>()
@@ -14,7 +14,7 @@ class AnimalDetailsViewModel : ViewModel() {
     fun removeAnimal(animal: AnimalModel)
     {
         status.value = try {
-            AnimalJSONStore.delete(animal)
+            //AnimalJSONStore.delete(animal)
             true
         } catch (e:IllegalArgumentException){
             false
@@ -25,7 +25,7 @@ class AnimalDetailsViewModel : ViewModel() {
     fun updateAnimal(animal: AnimalModel)
     {
         status.value = try{
-            AnimalJSONStore.update(animal)
+            //AnimalJSONStore.update(animal)
             true
         } catch (e:IllegalArgumentException){
         false

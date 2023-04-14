@@ -3,15 +3,17 @@ package org.com.animalTracker.ui.AnimalList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import org.com.animalTracker.models.AnimalJSONStore
+import com.google.firebase.auth.FirebaseUser
+
 import org.com.animalTracker.models.AnimalModel
-import org.com.animalTracker.models.AnimalStorage
+
+import org.com.animalTracker.models.FirebaseDBManager
 
 class AnimalListViewModel : ViewModel() {
 
 
     private val animalList = MutableLiveData<List<AnimalModel>>()
-
+    var liveFirebaseUser = MutableLiveData<FirebaseUser>()
     val observableAnimalList: LiveData<List<AnimalModel>>
     get () = animalList
 
@@ -21,7 +23,16 @@ class AnimalListViewModel : ViewModel() {
 
     fun load()
     {
-        animalList.value = AnimalJSONStore.findAll()
+        //animalList.value = AnimalJSONStore.findAll()
+        try
+        {
+            FirebaseDBManager.findAll(liveFirebaseUser.value?.uid!!,animalList)
+        }
+        catch(e: java.lang.Exception)
+            {
+
+            }
+
     }
 
     private val _text = MutableLiveData<String>().apply {

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.com.animalTracker.models.AnimalModel
-import org.com.animalTracker.models.TempStore
+
 
 class QuickAddViewModel : ViewModel() {
 
@@ -25,13 +25,13 @@ class QuickAddViewModel : ViewModel() {
 
     fun load()
     {
-        animalList.value = TempStore.findAll()
+        //animalList.value = TempStore.findAll()
     }
     val text: LiveData<String> = _text
     fun addAnimal(animal: AnimalModel)
     {
         status.value = try {
-            TempStore.create(animal)
+            //TempStore.create(animal)
             true
         } catch (e:IllegalArgumentException){
             false

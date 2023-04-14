@@ -13,9 +13,7 @@ import org.com.animalTracker.R
 import org.com.animalTracker.databinding.FragmentAnimalDetailsBinding
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
 import org.com.animalTracker.databinding.FragmentCreateanimalBinding
-import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.models.AnimalModel
-import org.com.animalTracker.models.AnimalStorage
 import org.com.animalTracker.ui.AnimalList.AnimalListFragment
 import org.com.animalTracker.ui.AnimalList.AnimalListFragmentDirections
 import org.com.animalTracker.ui.createAnimal.CreateAnimalViewModel
@@ -37,13 +35,13 @@ class AnimalDetails : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        Timber.i("Args"+AnimalJSONStore.findById(args.animal)?.toString())
+        /*Timber.i("Args"+AnimalJSONStore.findById(args.animal)?.toString())
         _fragBinding = FragmentAnimalDetailsBinding.inflate(inflater, container, false)
         fragBinding.editNameField.setText(AnimalJSONStore.findById(args.animal)?.animalName)
         fragBinding.editSpeciesField.setText(AnimalJSONStore.findById(args.animal)?.animalSpecies)
         fragBinding.editRegionField.setText(AnimalJSONStore.findById(args.animal)?.region)
         fragBinding.editDietField.setText(AnimalJSONStore.findById(args.animal)?.diet)
-        viewModel = ViewModelProvider(this).get(AnimalDetailsViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(AnimalDetailsViewModel::class.java)*/
         Timber.i("PRESSED")
         print("Pressed")
         setButtonListener(fragBinding)
@@ -62,12 +60,12 @@ class AnimalDetails : Fragment() {
     fun setButtonListener(layout: FragmentAnimalDetailsBinding)
     {
         Timber.i("PRESSED")
-        layout.confirmDelete.setOnClickListener{
+        /*layout.confirmDelete.setOnClickListener{
             var an: AnimalModel? = AnimalJSONStore.findById(args.animal)
             viewModel.removeAnimal(an as AnimalModel)
             val action = AnimalDetailsDirections.actionAnimalDetailsToNavGallery()
             findNavController().navigate(action)
-        }
+        }*/
         layout.confirmUpdate.setOnClickListener{
             var an = AnimalModel(
                 id = args.animal,

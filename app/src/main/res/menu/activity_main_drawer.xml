@@ -21,6 +21,7 @@
         <item
             android:id="@+id/authFragment"
             android:icon="@android:drawable/ic_menu_revert"
+            android:onClick="signOut"
             android:title="@string/auth_signOut" />
 
 
