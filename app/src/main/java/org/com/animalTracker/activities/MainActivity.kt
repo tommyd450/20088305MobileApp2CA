@@ -13,8 +13,10 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.firebase.auth.FirebaseUser
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
+import org.com.animalTracker.databinding.NavHeaderNavBinding
 import org.com.animalTracker.models.AnimalJSONStore
 import timber.log.Timber
 
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var homeBinding : HomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var navHeaderBinding : NavHeaderNavBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +58,13 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    fun updateNavHeader(currentUser: FirebaseUser)
+    {
+        var headerView = homeBinding.navView.getHeaderView(0)
+        navHeaderBinding = NavHeaderNavBinding.bind(headerView)
+        navHeaderBinding.email.text = currentUser.email
     }
 
 

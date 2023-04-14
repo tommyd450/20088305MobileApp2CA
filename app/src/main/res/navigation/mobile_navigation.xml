@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@id/nav_home">
 
     <fragment
         android:id="@+id/nav_home"
@@ -23,6 +23,11 @@
         <action
             android:id="@+id/action_nav_gallery_to_animalDetails"
             app:destination="@id/animalDetails" />
+        <action
+            android:id="@+id/action_nav_gallery_to_authFragment"
+            app:destination="@id/authFragment"
+            app:popUpTo="@id/mobile_navigation"
+            app:popUpToInclusive="true" />
 
     </fragment>
 
@@ -34,6 +39,11 @@
         <action
             android:id="@+id/action_nav_slideshow_to_nav_gallery"
             app:destination="@id/nav_gallery" />
+        <action
+            android:id="@+id/action_nav_slideshow_to_authFragment"
+            app:destination="@id/authFragment"
+            app:popUpTo="@id/mobile_navigation"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/animalDetails"
@@ -47,5 +57,15 @@
             android:name="Animal"
             app:argType="long"
              />
+        <action
+            android:id="@+id/action_animalDetails_to_authFragment"
+            app:destination="@id/authFragment"
+            app:popUpTo="@id/mobile_navigation"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="org.com.animalTracker.ui.auth.AuthFragment"
+        android:label="@string/auth_signOut" >
     </fragment>
 </navigation>
