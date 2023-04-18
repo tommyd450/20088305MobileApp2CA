@@ -34,8 +34,14 @@ object FirebaseDBManager:AnimalStoreInterface {
             })
     }
 
-    override fun findById(userid: String, donationid: String, donation: MutableLiveData<AnimalModel>) {
-     TODO("Not yet implemented")
+    override fun findById(userid: String, animalid: String, animal: MutableLiveData<AnimalModel>) {
+        database.child("user-donations").child(userid)
+            .child(animalid).get().addOnSuccessListener {
+                animal.value = it.getValue(AnimalModel::class.java)
+                Timber.i("firebase Got value ${it.value}")
+            }.addOnFailureListener{
+                Timber.e("firebase Error getting data $it")
+            }
     }
 
     override fun create(firebaseUser: MutableLiveData<FirebaseUser>, animal: AnimalModel) {
@@ -58,7 +64,11 @@ object FirebaseDBManager:AnimalStoreInterface {
     }
 
     override fun delete(userid: String, animalid: String) {
-     TODO("Not yet implemented")
+        val childDelete : MutableMap<String, Any?> = HashMap()
+        childDelete["/animals/$animalid"] = null
+        childDelete["/user-animals/$userid/$animalid"] = null
+
+        database.updateChildren(childDelete)
     }
 
     override fun update(userid: String, animalid: String, animal: AnimalModel) {

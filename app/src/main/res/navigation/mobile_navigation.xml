@@ -45,7 +45,7 @@
             app:destination="@id/nav_gallery" />
         <argument
             android:name="Animal"
-            app:argType="long"
+            app:argType="org.com.animalTracker.models.AnimalModel"
              />
     </fragment>
 </navigation>

@@ -6,6 +6,7 @@ import androidx.appcompat.widget.SearchView
 import android.widget.TextView
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -18,6 +19,7 @@ import org.com.animalTracker.adapters.AnimalClickListener
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
 
 import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.ui.auth.LoggedInViewModel
 
 import timber.log.Timber
 
@@ -27,6 +29,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
     private var _fragBinding: FragmentAnimallistBinding? = null
     private val fragBinding get() = _fragBinding!!
     private lateinit var animalListViewModel: AnimalListViewModel
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,13 +119,19 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
     }
 
     override fun onAnimalClick(animal: AnimalModel) {
-        val action = AnimalListFragmentDirections.actionNavGalleryToAnimalDetails(animal.id)
+        val action = AnimalListFragmentDirections.actionNavGalleryToAnimalDetails(animal)
         findNavController().navigate(action)
     }
 
     override fun onResume() {
         super.onResume()
         animalListViewModel.load()
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+            if (firebaseUser != null) {
+                animalListViewModel.liveFirebaseUser.value = firebaseUser
+                animalListViewModel.load()
+            }
+        })
     }
 
     override fun onDestroyView() {

@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseUser
 import org.com.animalTracker.models.AnimalModel
 
 import org.com.animalTracker.models.FirebaseDBManager
+import timber.log.Timber
 
 class AnimalListViewModel : ViewModel() {
 
@@ -30,7 +31,7 @@ class AnimalListViewModel : ViewModel() {
         }
         catch(e: java.lang.Exception)
             {
-
+                Timber.i(e)
             }
 
     }

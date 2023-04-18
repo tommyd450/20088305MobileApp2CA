@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -14,14 +16,17 @@ import org.com.animalTracker.databinding.FragmentAnimalDetailsBinding
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
 import org.com.animalTracker.databinding.FragmentCreateanimalBinding
 import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.models.FirebaseDBManager
 import org.com.animalTracker.ui.AnimalList.AnimalListFragment
 import org.com.animalTracker.ui.AnimalList.AnimalListFragmentDirections
+import org.com.animalTracker.ui.auth.LoggedInViewModel
 import org.com.animalTracker.ui.createAnimal.CreateAnimalViewModel
 import timber.log.Timber
 
 class AnimalDetails : Fragment() {
     private var _fragBinding: FragmentAnimalDetailsBinding? = null
     private val fragBinding get() = _fragBinding!!
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
     companion object {
         fun newInstance() = AnimalDetails()
     }
@@ -35,13 +40,13 @@ class AnimalDetails : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        /*Timber.i("Args"+AnimalJSONStore.findById(args.animal)?.toString())
+        Timber.i("Args"+args.animal?.toString())
         _fragBinding = FragmentAnimalDetailsBinding.inflate(inflater, container, false)
-        fragBinding.editNameField.setText(AnimalJSONStore.findById(args.animal)?.animalName)
-        fragBinding.editSpeciesField.setText(AnimalJSONStore.findById(args.animal)?.animalSpecies)
-        fragBinding.editRegionField.setText(AnimalJSONStore.findById(args.animal)?.region)
-        fragBinding.editDietField.setText(AnimalJSONStore.findById(args.animal)?.diet)
-        viewModel = ViewModelProvider(this).get(AnimalDetailsViewModel::class.java)*/
+        fragBinding.editNameField.setText(args.animal.animalName)
+        fragBinding.editSpeciesField.setText(args.animal.animalSpecies)
+        fragBinding.editRegionField.setText(args.animal.region)
+        fragBinding.editDietField.setText(args.animal.diet)
+        viewModel = ViewModelProvider(this).get(AnimalDetailsViewModel::class.java)
         Timber.i("PRESSED")
         print("Pressed")
         setButtonListener(fragBinding)
@@ -57,18 +62,30 @@ class AnimalDetails : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+            if (firebaseUser != null) {
+                viewModel.liveFirebaseUser.value = firebaseUser
+
+            }
+        })
+    }
+
     fun setButtonListener(layout: FragmentAnimalDetailsBinding)
     {
+        var selected = MutableLiveData<AnimalModel>()
+        selected.value = args.animal
         Timber.i("PRESSED")
-        /*layout.confirmDelete.setOnClickListener{
-            var an: AnimalModel? = AnimalJSONStore.findById(args.animal)
-            viewModel.removeAnimal(an as AnimalModel)
+        layout.confirmDelete.setOnClickListener{
+
+            viewModel.removeAnimal(args.animal)
             val action = AnimalDetailsDirections.actionAnimalDetailsToNavGallery()
             findNavController().navigate(action)
-        }*/
+        }
         layout.confirmUpdate.setOnClickListener{
             var an = AnimalModel(
-                id = args.animal,
+                id = args.animal.id,
                 animalName = layout.editNameField.text.toString(),
                 animalSpecies = layout.editSpeciesField.text.toString(),
                 region = layout.editRegionField.text.toString(),
