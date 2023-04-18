@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         var headerView = homeBinding.navView.getHeaderView(0)
         navHeaderBinding = NavHeaderNavBinding.bind(headerView)
         navHeaderBinding.email.text = currentUser.email
+        navHeaderBinding.title.text = currentUser.displayName
     }
 
 

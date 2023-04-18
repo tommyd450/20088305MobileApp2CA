@@ -49,10 +49,10 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         binding.recyclerView2.layoutManager = LinearLayoutManager(activity)
-        //val textView: TextView = binding.textHome
-        //quickAddViewModel.text.observe(viewLifecycleOwner) {
-         //   textView.text = it
-        //}
+        val textView: TextView = binding.textHome
+        quickAddViewModel.text.observe(viewLifecycleOwner) {
+           textView.text = it
+        }
 
         quickAddViewModel =
             ViewModelProvider(this).get(QuickAddViewModel::class.java)

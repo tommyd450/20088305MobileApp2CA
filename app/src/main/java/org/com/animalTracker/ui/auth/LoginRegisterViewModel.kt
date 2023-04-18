@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.ui.AppBarConfiguration
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.FirebaseUser
 import org.com.animalTracker.activities.MainActivity
 import org.com.animalTracker.databinding.HomeBinding
@@ -22,5 +23,9 @@ class LoginRegisterViewModel (app: Application) : AndroidViewModel(app) {
 
     fun register(email: String?, password: String?) {
         firebaseAuthManager.register(email, password)
+    }
+
+    fun authWithGoogle(acct: GoogleSignInAccount) {
+        firebaseAuthManager.firebaseAuthWithGoogle(acct)
     }
 }

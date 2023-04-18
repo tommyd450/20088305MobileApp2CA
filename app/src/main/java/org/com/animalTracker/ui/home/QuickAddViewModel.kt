@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.models.FirebaseDBManager
 
 
 class QuickAddViewModel : ViewModel() {
@@ -26,6 +27,7 @@ class QuickAddViewModel : ViewModel() {
     fun load()
     {
         //animalList.value = TempStore.findAll()
+
     }
     val text: LiveData<String> = _text
     fun addAnimal(animal: AnimalModel)

@@ -89,7 +89,8 @@ class AnimalDetails : Fragment() {
                 animalName = layout.editNameField.text.toString(),
                 animalSpecies = layout.editSpeciesField.text.toString(),
                 region = layout.editRegionField.text.toString(),
-                diet = layout.editDietField.text.toString())
+                diet = layout.editDietField.text.toString(),
+                uid = args.animal.uid)
             viewModel.updateAnimal(an )
             val action = AnimalDetailsDirections.actionAnimalDetailsToNavGallery()
             findNavController().navigate(action)

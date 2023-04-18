@@ -72,6 +72,12 @@ object FirebaseDBManager:AnimalStoreInterface {
     }
 
     override fun update(userid: String, animalid: String, animal: AnimalModel) {
-     TODO("Not yet implemented")
+        val animalValues = animal.toMap()
+
+        val childUpdate : MutableMap<String, Any?> = HashMap()
+        childUpdate["/animals/$animalid"] = animalValues
+        childUpdate["/user-animals/$userid/$animalid"] = animalValues
+
+        database.updateChildren(childUpdate)
     }
 }
