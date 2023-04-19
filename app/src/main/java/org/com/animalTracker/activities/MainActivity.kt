@@ -1,33 +1,38 @@
 package org.com.animalTracker.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.*
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
-import com.android.volley.AuthFailureError
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import com.google.firebase.auth.FirebaseUser
+import com.squareup.picasso.Picasso
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
-import org.com.animalTracker.models.AnimalJSONStore
+import org.com.animalTracker.databinding.NavHeaderNavBinding
+//import org.com.animalTracker.models.AnimalJSONStore
+import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.utils.json.customTransformation
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var homeBinding : HomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var navHeaderBinding : NavHeaderNavBinding
+    private lateinit var loggedInViewModel : LoggedInViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AnimalJSONStore.context = applicationContext
-        AnimalJSONStore.init()
+        //AnimalJSONStore.context = applicationContext
+        //AnimalJSONStore.init()
         Timber.plant(Timber.DebugTree())
         //animalStorage = AnimalStorage()
         Timber.i("Animal Tracker Application Started")
@@ -45,9 +50,27 @@ class MainActivity : AppCompatActivity() {
 
         appBarConfiguration = AppBarConfiguration(setOf(
             R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         val navView = homeBinding.navView
         navView.setupWithNavController(navController)
+
+    }
+
+    public override fun onStart()
+    {
+        super.onStart()
+        loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
+        loggedInViewModel.liveFirebaseUser.observe(this, Observer { firebaseUser ->
+            if (firebaseUser != null)
+                updateNavHeader(loggedInViewModel.liveFirebaseUser.value!!)
+        })
+
+        loggedInViewModel.loggedOut.observe(this, Observer { loggedout ->
+            if (loggedout) {
+                startActivity(Intent(this, Login::class.java))
+            }
+        })
 
     }
 
@@ -57,6 +80,31 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+
+    fun updateNavHeader(currentUser: FirebaseUser)
+    {
+        var headerView = homeBinding.navView.getHeaderView(0)
+        navHeaderBinding = NavHeaderNavBinding.bind(headerView)
+        navHeaderBinding.email.text = currentUser.email
+        navHeaderBinding.title.text = currentUser.displayName
+        if(currentUser.photoUrl != null && currentUser.displayName != null) {
+            navHeaderBinding.title.text = currentUser.displayName
+            Picasso.get().load(currentUser.photoUrl)
+                .resize(200, 200)
+                .transform(customTransformation())
+                .centerCrop()
+                .into(navHeaderBinding.imageView)
+        }
+    }
+
+
+    fun signOut(item: MenuItem) {
+        loggedInViewModel.logOut()
+        //Launch org.com.animalTracker.activities.Login activity and clear the back stack to stop navigating back to the Home activity
+        val intent = Intent(this, Login::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
 
 
 }

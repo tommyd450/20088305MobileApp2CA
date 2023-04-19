@@ -6,6 +6,7 @@ import androidx.appcompat.widget.SearchView
 import android.widget.TextView
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -16,9 +17,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
-import org.com.animalTracker.models.AnimalJSONStore
+
 import org.com.animalTracker.models.AnimalModel
-import org.com.animalTracker.models.AnimalStorage
+import org.com.animalTracker.ui.auth.LoggedInViewModel
+
 import timber.log.Timber
 
 
@@ -27,6 +29,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
     private var _fragBinding: FragmentAnimallistBinding? = null
     private val fragBinding get() = _fragBinding!!
     private lateinit var animalListViewModel: AnimalListViewModel
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +76,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
         val filteredlist: ArrayList<AnimalModel> = ArrayList()
 
         // running a for loop to compare elements.
-        for (item in AnimalJSONStore.animals) {
+        for (item in animalListViewModel.observableAnimalList.value!!) {
             // checking if the entered string matched with any item of our recycler view.
             if (item.animalName.toLowerCase().contains(text.toLowerCase())) {
                 // if the item is matched we are
@@ -89,7 +92,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
         } else {
             // at last we are passing that filtered
             // list to our adapter class.
-            var adp: AnimalAdapter = AnimalAdapter(AnimalJSONStore.findAll(),this)
+            //var adp: AnimalAdapter = AnimalAdapter(AnimalJSONStore.findAll(),this)
             //adp.filterList(filteredlist)
             render(filteredlist)
         }
@@ -116,13 +119,19 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
     }
 
     override fun onAnimalClick(animal: AnimalModel) {
-        val action = AnimalListFragmentDirections.actionNavGalleryToAnimalDetails(animal.id)
+        val action = AnimalListFragmentDirections.actionNavGalleryToAnimalDetails(animal)
         findNavController().navigate(action)
     }
 
     override fun onResume() {
         super.onResume()
         animalListViewModel.load()
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+            if (firebaseUser != null) {
+                animalListViewModel.liveFirebaseUser.value = firebaseUser
+                animalListViewModel.load()
+            }
+        })
     }
 
     override fun onDestroyView() {

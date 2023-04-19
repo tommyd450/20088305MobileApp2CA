@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "592620103274",
+    "firebase_url": "https://mobileapp2-2f8b6-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "mobileapp2-2f8b6",
     "storage_bucket": "mobileapp2-2f8b6.appspot.com"
   },
@@ -14,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "592620103274-0qjifkrd34sjo0kng44qafp6fgm17sm3.apps.googleusercontent.com",
+          "client_id": "592620103274-dhjg95qbvbah6mqu3lgeesq92i3kc6v1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.com.animalTracker",
+            "certificate_hash": "e33a7c41b49ee1c73339b06254d72ff1a7325817"
+          }
+        },
+        {
+          "client_id": "592620103274-easunn5nvh0phpmivv1j0rg3umqqb64h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

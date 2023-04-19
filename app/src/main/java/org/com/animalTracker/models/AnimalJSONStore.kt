@@ -1,4 +1,4 @@
-package org.com.animalTracker.models
+/*package org.com.animalTracker.models
 
 
 import android.content.Context
@@ -113,4 +113,4 @@ class UriParser : JsonDeserializer<Uri>,JsonSerializer<Uri> {
     ): JsonElement {
         return JsonPrimitive(src.toString())
     }
-}
+}*/

@@ -16,5 +16,14 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/menu_slideshow" />
+
+
+        <item
+            android:id="@+id/authFragment"
+            android:icon="@android:drawable/ic_menu_revert"
+            android:onClick="signOut"
+            android:title="@string/auth_signOut" />
+
+
     </group>
 </menu>

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,9 +18,12 @@ import org.com.animalTracker.databinding.FragmentHomeBinding
 import timber.log.Timber
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
-import org.com.animalTracker.models.AnimalJSONStore
+
 import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.models.FirebaseDBManager
 import org.com.animalTracker.models.TempStore
+import org.com.animalTracker.ui.auth.LoggedInViewModel
+
 import org.json.JSONArray
 import org.json.JSONException
 
@@ -36,6 +40,7 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
     private var stringRequest: StringRequest? = null
     lateinit var quickAddViewModel : QuickAddViewModel
     private val url = "https://api.api-ninjas.com/v1/animals?name="
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,10 +54,7 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         binding.recyclerView2.layoutManager = LinearLayoutManager(activity)
-        //val textView: TextView = binding.textHome
-        //quickAddViewModel.text.observe(viewLifecycleOwner) {
-         //   textView.text = it
-        //}
+
 
         quickAddViewModel =
             ViewModelProvider(this).get(QuickAddViewModel::class.java)
@@ -148,7 +150,10 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
     }
 
     override fun onAnimalClick(animal: AnimalModel) {
-        AnimalJSONStore.create(animal)
+
+
+        Timber.i("Is it null")
+        quickAddViewModel.addAnimal(loggedInViewModel.liveFirebaseUser,animal)
         //val action = HomeFragmentDirections.actionNavHomeToNavGallery()
         //findNavController().navigate(action)
 
