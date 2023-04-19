@@ -72,4 +72,6 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }

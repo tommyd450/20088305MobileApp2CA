@@ -12,11 +12,13 @@ import androidx.navigation.*
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.google.firebase.auth.FirebaseUser
+import com.squareup.picasso.Picasso
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
 import org.com.animalTracker.databinding.NavHeaderNavBinding
 //import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.utils.json.customTransformation
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -85,6 +87,14 @@ class MainActivity : AppCompatActivity() {
         navHeaderBinding = NavHeaderNavBinding.bind(headerView)
         navHeaderBinding.email.text = currentUser.email
         navHeaderBinding.title.text = currentUser.displayName
+        if(currentUser.photoUrl != null && currentUser.displayName != null) {
+            navHeaderBinding.title.text = currentUser.displayName
+            Picasso.get().load(currentUser.photoUrl)
+                .resize(200, 200)
+                .transform(customTransformation())
+                .centerCrop()
+                .into(navHeaderBinding.imageView)
+        }
     }
 
 

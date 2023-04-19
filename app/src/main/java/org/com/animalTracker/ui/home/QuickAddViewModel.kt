@@ -3,15 +3,17 @@ package org.com.animalTracker.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseUser
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.FirebaseDBManager
+import timber.log.Timber
 
 
 class QuickAddViewModel : ViewModel() {
 
 
     private val animalList = MutableLiveData<List<AnimalModel>>()
-
+    var liveFirebaseUser = MutableLiveData<FirebaseUser>()
     val observableAnimalList: LiveData<List<AnimalModel>>
         get () = animalList
 
@@ -30,10 +32,12 @@ class QuickAddViewModel : ViewModel() {
 
     }
     val text: LiveData<String> = _text
-    fun addAnimal(animal: AnimalModel)
+    fun addAnimal(firebaseUser: MutableLiveData<FirebaseUser>,animal: AnimalModel)
     {
         status.value = try {
-            //TempStore.create(animal)
+
+            FirebaseDBManager.create(firebaseUser,animal)
+
             true
         } catch (e:IllegalArgumentException){
             false
