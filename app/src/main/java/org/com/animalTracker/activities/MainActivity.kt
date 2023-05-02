@@ -1,8 +1,10 @@
 package org.com.animalTracker.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -16,6 +18,7 @@ import com.squareup.picasso.Picasso
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
 import org.com.animalTracker.databinding.NavHeaderNavBinding
+import org.com.animalTracker.models.FireBaseImageManager
 //import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.ui.auth.LoggedInViewModel
 import org.com.animalTracker.utils.json.customTransformation
@@ -27,6 +30,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navHeaderBinding : NavHeaderNavBinding
     private lateinit var loggedInViewModel : LoggedInViewModel
+    private lateinit var headerView : View
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-
+        initNavHeader()
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
@@ -62,8 +67,12 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         loggedInViewModel.liveFirebaseUser.observe(this, Observer { firebaseUser ->
-            if (firebaseUser != null)
-                updateNavHeader(loggedInViewModel.liveFirebaseUser.value!!)
+            //if (firebaseUser != null)
+           // {
+                updateNavHeader(firebaseUser)
+            //}
+
+
         })
 
         loggedInViewModel.loggedOut.observe(this, Observer { loggedout ->
@@ -81,20 +90,45 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun updateNavHeader(currentUser: FirebaseUser)
-    {
-        var headerView = homeBinding.navView.getHeaderView(0)
-        navHeaderBinding = NavHeaderNavBinding.bind(headerView)
-        navHeaderBinding.email.text = currentUser.email
-        navHeaderBinding.title.text = currentUser.displayName
-        if(currentUser.photoUrl != null && currentUser.displayName != null) {
-            navHeaderBinding.title.text = currentUser.displayName
-            Picasso.get().load(currentUser.photoUrl)
-                .resize(200, 200)
-                .transform(customTransformation())
-                .centerCrop()
-                .into(navHeaderBinding.imageView)
+    private fun updateNavHeader(currentUser: FirebaseUser) {
+        FireBaseImageManager.imageUri.observe(this) { result ->
+            if (result == Uri.EMPTY) {
+                Timber.i("DX NO Existing imageUri")
+                if (currentUser.photoUrl != null) {
+                    //if you're a google user
+                    FireBaseImageManager.updateUserImage(
+                        currentUser.uid,
+                        currentUser.photoUrl,
+                        navHeaderBinding.imageView,
+                        true
+                    )
+                } else {
+                    Timber.i("DX Loading Existing Default imageUri")
+                    FireBaseImageManager.updateDefaultImage(
+                        currentUser.uid,
+                        R.drawable.ic_launcher_homer,
+                        navHeaderBinding.imageView
+                    )
+                }
+            } else // load existing image from firebase
+            {
+                Timber.i("DX Loading Existing imageUri")
+                FireBaseImageManager.updateUserImage(
+                    currentUser.uid,
+                    FireBaseImageManager.imageUri.value,
+                    navHeaderBinding.imageView, false
+                )
+            }
         }
+        navHeaderBinding.email.text = currentUser.email
+        if(currentUser.displayName != null)
+            navHeaderBinding.title.text = currentUser.displayName
+    }
+
+    private fun initNavHeader() {
+
+        headerView = homeBinding.navView.getHeaderView(0)
+        navHeaderBinding = NavHeaderNavBinding.bind(headerView)
     }
 
 
