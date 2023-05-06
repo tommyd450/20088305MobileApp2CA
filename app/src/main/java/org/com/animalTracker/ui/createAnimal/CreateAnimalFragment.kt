@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +24,7 @@ import org.com.animalTracker.databinding.FragmentCreateanimalBinding
 import org.com.animalTracker.main.App
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.FireBaseImageManager
+import org.com.animalTracker.models.FirebaseDBManager
 import org.com.animalTracker.ui.auth.LoggedInViewModel
 import org.com.animalTracker.utils.json.readImageUri
 import org.com.animalTracker.utils.json.showImagePicker
@@ -102,9 +104,11 @@ class CreateAnimalFragment : Fragment() {
             animal.animalName = layout.nameField.text.toString()
             animal.region = layout.regionField.text.toString()
             animal.diet = layout.dietField.text.toString()
+
             createAnimalViewModel.addAnimal(loggedInViewModel.liveFirebaseUser,animal)
-
-
+            FireBaseImageManager.uploadObjectImageToFirebase(animal.uid,layout.imagePrev.drawable.toBitmap(),true)
+            animal.image = FireBaseImageManager.objectImageUri.value.toString()
+            FirebaseDBManager.update(loggedInViewModel.liveFirebaseUser.value!!.uid, animal.uid,animal)
         }
 
 
@@ -127,9 +131,11 @@ class CreateAnimalFragment : Fragment() {
                             )
                             animal.image = image.toString()
 
+
                             Picasso.get()
                                 .load(animal.image)
                                 .into(binding.imagePrev)
+
                             //binding.chooseImage.setText("")
                         } // end of if
                     }

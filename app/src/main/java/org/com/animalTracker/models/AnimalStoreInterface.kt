@@ -14,9 +14,7 @@ interface AnimalStoreInterface {
     fun update(animal: AnimalModel)*/
 
 
-        fun findAll(donationsList:
-                    MutableLiveData<List<AnimalModel>>
-        )
+
         fun findAll(userid:String,
                     donationsList:
                     MutableLiveData<List<AnimalModel>>)

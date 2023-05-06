@@ -28,7 +28,7 @@ class CreateAnimalViewModel : ViewModel() {
     {
 
         status.value = try {
-            //AnimalJSONStore.create(animal)
+
             FirebaseDBManager.create(firebaseUser,animal)
             true
         } catch (e:IllegalArgumentException){

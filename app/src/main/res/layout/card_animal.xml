@@ -8,16 +8,31 @@
             name="animal"
             type="org.com.animalTracker.models.AnimalModel" />
     </data>
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="314dp"
         android:layout_marginBottom="8dp"
         android:elevation="24dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="156dp"
+            android:layout_height="match_parent"
             android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/animPic"
+                android:layout_width="334dp"
+                android:layout_height="167dp"
+
+                android:layout_marginBottom="4dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/ic_launcher_foreground" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -85,10 +100,10 @@
                 android:text="SC Name:"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="0.002"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.277" />
+                app:layout_constraintVertical_bias="0.118" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -100,7 +115,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.503" />
+                app:layout_constraintVertical_bias="0.237" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -112,7 +127,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.81" />
+                app:layout_constraintVertical_bias="0.328" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

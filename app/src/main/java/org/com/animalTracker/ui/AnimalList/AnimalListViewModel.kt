@@ -19,7 +19,7 @@ class AnimalListViewModel : ViewModel() {
     get () = animalList
 
     init {
-        load()
+        //load()
     }
 
     fun load()

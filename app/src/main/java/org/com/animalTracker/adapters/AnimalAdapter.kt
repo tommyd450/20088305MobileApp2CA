@@ -3,9 +3,11 @@ package org.com.animalTracker.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.CardAnimalBinding
 import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.models.FireBaseImageManager
 
 interface AnimalClickListener {
     fun onAnimalClick(animal: AnimalModel)
@@ -47,7 +49,10 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
             binding.scNameValue.text = animal.animalSpecies.toString()
             binding.animalDiet.text = animal.diet.toString()
             binding.regionValue.text = animal.region.toString()
-            //binding.imageIcon.setImageResource(R.mipmap.ic_launcher_round)
+            Picasso.get().load(animal.image).into(binding.animPic)
+
+
+
             binding.root.setOnClickListener { listener.onAnimalClick(animal) }
             binding.executePendingBindings()
         }
