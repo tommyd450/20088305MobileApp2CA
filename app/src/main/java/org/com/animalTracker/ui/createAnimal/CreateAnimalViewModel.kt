@@ -36,4 +36,10 @@ class CreateAnimalViewModel : ViewModel() {
         }
 
     }
+
+    fun selectImage()
+    {
+
+
+    }
 }

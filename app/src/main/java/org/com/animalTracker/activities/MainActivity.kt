@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -22,6 +24,7 @@ import org.com.animalTracker.models.FireBaseImageManager
 //import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.ui.auth.LoggedInViewModel
 import org.com.animalTracker.utils.json.customTransformation
+import org.com.animalTracker.utils.json.readImageUri
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navHeaderBinding : NavHeaderNavBinding
     private lateinit var loggedInViewModel : LoggedInViewModel
     private lateinit var headerView : View
+    private lateinit var intentLauncher : ActivityResultLauncher<Intent>
 
 
 
@@ -103,7 +107,7 @@ class MainActivity : AppCompatActivity() {
                         true
                     )
                 } else {
-                    Timber.i("DX Loading Existing Default imageUri")
+                    Timber.i("Loading Existing Default imageUri")
                     FireBaseImageManager.updateDefaultImage(
                         currentUser.uid,
                         R.drawable.ic_launcher_homer,
@@ -112,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                 }
             } else // load existing image from firebase
             {
-                Timber.i("DX Loading Existing imageUri")
+                Timber.i("Loading Existing imageUri")
                 FireBaseImageManager.updateUserImage(
                     currentUser.uid,
                     FireBaseImageManager.imageUri.value,
@@ -139,6 +143,25 @@ class MainActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
+    private fun registerImagePickerCallback() {
+        intentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                when(result.resultCode){
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            Timber.i("DX registerPickerCallback() ${readImageUri(result.resultCode, result.data).toString()}")
+                            FireBaseImageManager
+                                .updateUserImage(loggedInViewModel.liveFirebaseUser.value!!.uid,
+                                    readImageUri(result.resultCode, result.data),
+                                    navHeaderBinding.imageView,
+                                    true)
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
+    }
+
 
 
 }
