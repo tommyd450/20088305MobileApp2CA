@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso
 import org.com.animalTracker.utils.json.customTransformation
 import java.io.ByteArrayOutputStream
 import com.squareup.picasso.Target
+import org.com.animalTracker.firebase.FirebaseAuthManager
 import timber.log.Timber
 
 object FireBaseImageManager {
@@ -63,7 +64,9 @@ object FireBaseImageManager {
                 uploadTask = imageRef.putBytes(data)
                 uploadTask.addOnSuccessListener { ut ->
                     ut.metadata!!.reference!!.downloadUrl.addOnCompleteListener { task ->
-                        objectImageUri.value = task.result!!
+                        imageUri.value = task.result!!
+
+
                     }
                 }
             }
@@ -71,13 +74,13 @@ object FireBaseImageManager {
             uploadTask = imageRef.putBytes(data)
             uploadTask.addOnSuccessListener { ut ->
                 ut.metadata!!.reference!!.downloadUrl.addOnCompleteListener { task ->
-                    objectImageUri.value = task.result!!
+                    imageUri.value = task.result!!
                 }
             }
         }
     }
 
-    fun uploadObjectImageToFirebase(userid: String, bitmap: Bitmap, updating : Boolean) {
+    fun uploadObjectImageToFirebase(id : String,userid: String, bitmap: Bitmap,animal: AnimalModel, updating : Boolean) {
         // Get the data from an ImageView as bytes
         val imageRef = storage.child("photos").child("${userid}.jpg")
         //val bitmap = (imageView as BitmapDrawable).bitmap
@@ -94,6 +97,9 @@ object FireBaseImageManager {
                 uploadTask.addOnSuccessListener { ut ->
                     ut.metadata!!.reference!!.downloadUrl.addOnCompleteListener { task ->
                         objectImageUri.value = task.result!!
+                        animal.image = objectImageUri.value.toString()
+                        Timber.i("Update Test"+id,userid,animal)
+                        FirebaseDBManager.update(id,userid,animal)
                     }
                 }
             }
@@ -102,6 +108,9 @@ object FireBaseImageManager {
             uploadTask.addOnSuccessListener { ut ->
                 ut.metadata!!.reference!!.downloadUrl.addOnCompleteListener { task ->
                     objectImageUri.value = task.result!!
+                    animal.image = objectImageUri.value.toString()
+                    Timber.i("Update Test"+id,userid,animal)
+                    FirebaseDBManager.update(id,userid,animal)
                 }
             }
         }

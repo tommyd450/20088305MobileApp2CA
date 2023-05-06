@@ -104,10 +104,11 @@ class CreateAnimalFragment : Fragment() {
             animal.animalName = layout.nameField.text.toString()
             animal.region = layout.regionField.text.toString()
             animal.diet = layout.dietField.text.toString()
-
+            animal.email = loggedInViewModel.liveFirebaseUser.value!!.email.toString()
             createAnimalViewModel.addAnimal(loggedInViewModel.liveFirebaseUser,animal)
-            FireBaseImageManager.uploadObjectImageToFirebase(animal.uid,layout.imagePrev.drawable.toBitmap(),true)
-            animal.image = FireBaseImageManager.objectImageUri.value.toString()
+            FireBaseImageManager.uploadObjectImageToFirebase(loggedInViewModel.liveFirebaseUser.value!!.uid,animal.uid,binding.imagePrev.drawable.toBitmap(),animal,true)
+
+
             FirebaseDBManager.update(loggedInViewModel.liveFirebaseUser.value!!.uid, animal.uid,animal)
         }
 
@@ -129,11 +130,11 @@ class CreateAnimalFragment : Fragment() {
                                 image,
                                 Intent.FLAG_GRANT_READ_URI_PERMISSION
                             )
-                            animal.image = image.toString()
+                            //animal.image = image.toString()
 
 
                             Picasso.get()
-                                .load(animal.image)
+                                .load(image)
                                 .into(binding.imagePrev)
 
                             //binding.chooseImage.setText("")

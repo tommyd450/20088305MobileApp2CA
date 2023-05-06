@@ -8,6 +8,8 @@ import org.com.animalTracker.R
 import org.com.animalTracker.databinding.CardAnimalBinding
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.FireBaseImageManager
+import org.com.animalTracker.models.FirebaseDBManager
+import timber.log.Timber
 
 interface AnimalClickListener {
     fun onAnimalClick(animal: AnimalModel)
@@ -49,7 +51,13 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
             binding.scNameValue.text = animal.animalSpecies.toString()
             binding.animalDiet.text = animal.diet.toString()
             binding.regionValue.text = animal.region.toString()
-            Picasso.get().load(animal.image).into(binding.animPic)
+            if(animal.image != "null" || animal.image !="" )
+            {
+                FireBaseImageManager.checkStorageForExistingImage(animal.uid)
+                Timber.i("TESTURL"+FireBaseImageManager.objectImageUri.value.toString())
+                Picasso.get().load(animal.image).into(binding.animPic)
+            }
+
 
 
 
