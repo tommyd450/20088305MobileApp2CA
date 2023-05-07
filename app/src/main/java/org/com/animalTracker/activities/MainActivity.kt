@@ -1,12 +1,15 @@
 package org.com.animalTracker.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -20,9 +23,12 @@ import com.squareup.picasso.Picasso
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
 import org.com.animalTracker.databinding.NavHeaderNavBinding
+import org.com.animalTracker.helpers.checkLocationPermissions
+import org.com.animalTracker.helpers.isPermissionGranted
 import org.com.animalTracker.models.FireBaseImageManager
 //import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.ui.maps.MapsViewModel
 import org.com.animalTracker.utils.json.customTransformation
 import org.com.animalTracker.utils.json.readImageUri
 import org.com.animalTracker.utils.json.showImagePicker
@@ -36,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loggedInViewModel : LoggedInViewModel
     private lateinit var headerView : View
     private lateinit var intentLauncher : ActivityResultLauncher<Intent>
-
+    private val mapsViewModel : MapsViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +63,9 @@ class MainActivity : AppCompatActivity() {
         initNavHeader()
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-
+        if(checkLocationPermissions(this)) {
+            mapsViewModel.updateCurrentLocation()
+        }
         appBarConfiguration = AppBarConfiguration(setOf(
             R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,R.id.mapsFragment), drawerLayout)
 
@@ -73,10 +81,9 @@ class MainActivity : AppCompatActivity() {
         registerImagePickerCallback()
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         loggedInViewModel.liveFirebaseUser.observe(this, Observer { firebaseUser ->
-            //if (firebaseUser != null)
-           // {
+
                 updateNavHeader(firebaseUser)
-            //}
+
 
 
         })
@@ -169,6 +176,19 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (isPermissionGranted(requestCode, grantResults))
+            mapsViewModel.updateCurrentLocation()
+        else {
+            // permissions denied, so use a default location
+            mapsViewModel.currentLocation.value = Location("Default").apply {
+                latitude = 52.245696
+                longitude = -7.139102
+            }
+        }
+        Timber.i("LOC : %s", mapsViewModel.currentLocation.value)
+    }
 
 }
