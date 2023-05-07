@@ -123,6 +123,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
 
     override fun onResume() {
         super.onResume()
+        setHasOptionsMenu(true)
         animalListViewModel.load()
         loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
             if (firebaseUser != null) {
@@ -133,13 +134,14 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_list, menu)
-        val item = menu.findItem(R.id.toggleDonations) as MenuItem
-        item.setActionView(R.layout.toggle_layout)
-        val toggleDonations: SwitchCompat = item.actionView!!.findViewById(R.id.toggleButton)
-        toggleDonations.isChecked = false
 
-        toggleDonations.setOnCheckedChangeListener { _, isChecked ->
+        inflater.inflate(R.menu.menu_list, menu)
+        val item = menu.findItem(R.id.toggleListAnimals) as MenuItem
+        item.setActionView(R.layout.toggle_layout)
+        val toggleAnimals: SwitchCompat = item.actionView!!.findViewById(R.id.toggleButton)
+        toggleAnimals.isChecked = false
+
+        toggleAnimals.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) animalListViewModel.loadAll()
             else animalListViewModel.load()
         }

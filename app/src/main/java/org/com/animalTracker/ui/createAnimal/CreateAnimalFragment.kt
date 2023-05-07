@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.android.volley.RequestQueue
@@ -26,6 +27,7 @@ import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.FireBaseImageManager
 import org.com.animalTracker.models.FirebaseDBManager
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.ui.maps.MapsViewModel
 import org.com.animalTracker.utils.json.readImageUri
 import org.com.animalTracker.utils.json.showImagePicker
 import timber.log.Timber
@@ -44,6 +46,8 @@ class CreateAnimalFragment : Fragment() {
     private lateinit var loggedInViewModel: LoggedInViewModel
     private val url = "https://api.api-ninjas.com/v1/animals?name="
     private lateinit var intentLauncher: ActivityResultLauncher<Intent>
+    private val mapsViewModel: MapsViewModel by activityViewModels()
+
     var animal = AnimalModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
