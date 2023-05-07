@@ -1,51 +1,61 @@
 package org.com.animalTracker.ui.createAnimal
 
-import android.content.ContentValues
-import android.content.Context
+import android.app.Activity.*
+import android.content.Intent
+import android.content.ContentResolver
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-
-import com.android.volley.Request
 import com.android.volley.RequestQueue
-import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import org.com.animalTracker.databinding.FragmentCreateanimalBinding
-import org.com.animalTracker.models.AnimalModel
-import timber.log.Timber
-import com.android.volley.VolleyError;
+import com.squareup.picasso.Picasso
+import org.com.animalTracker.R
 import org.com.animalTracker.activities.MainActivity
+import org.com.animalTracker.databinding.FragmentCreateanimalBinding
 import org.com.animalTracker.main.App
+import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.models.FireBaseImageManager
+import org.com.animalTracker.models.FirebaseDBManager
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.utils.json.readImageUri
+import org.com.animalTracker.utils.json.showImagePicker
+import timber.log.Timber
 
 
 class CreateAnimalFragment : Fragment() {
-    lateinit var app : App
+    lateinit var app: App
     private var _binding: FragmentCreateanimalBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var createAnimalViewModel: CreateAnimalViewModel
     private var mRequestQueue: RequestQueue? = null
     private var mStringRequest: StringRequest? = null
-    private lateinit var loggedInViewModel : LoggedInViewModel
+    private lateinit var loggedInViewModel: LoggedInViewModel
     private val url = "https://api.api-ninjas.com/v1/animals?name="
-
+    private lateinit var intentLauncher: ActivityResultLauncher<Intent>
+    var animal = AnimalModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mRequestQueue = Volley.newRequestQueue(activity)
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
 
         _binding = FragmentCreateanimalBinding.inflate(inflater, container, false)
@@ -54,18 +64,20 @@ class CreateAnimalFragment : Fragment() {
 
         createAnimalViewModel =
             ViewModelProvider(this).get(CreateAnimalViewModel::class.java)
-        createAnimalViewModel.observableStatus.observe(viewLifecycleOwner, Observer {
-                status -> status?.let { render(status) }
+        createAnimalViewModel.observableStatus.observe(viewLifecycleOwner, Observer { status ->
+            status?.let { render(status) }
         })
         createAnimalViewModel.text.observe(viewLifecycleOwner) {
             //textView.text = it
         }
         Timber.i("PRESSED")
         print("Pressed")
+        binding.imageSelect.setOnClickListener {
+            showImagePicker(intentLauncher)
+        }
         setButtonListener(binding)
 
         //onTextChange(binding)
-
 
 
         return root
@@ -79,22 +91,62 @@ class CreateAnimalFragment : Fragment() {
                     //findNavController().popBackStack()
                 }
             }
-            false -> Toast.makeText(context,"THIS",Toast.LENGTH_LONG).show()
+            false -> Toast.makeText(context, "THIS", Toast.LENGTH_LONG).show()
         }
     }
 
-    fun setButtonListener(layout: FragmentCreateanimalBinding)
-    {
+    fun setButtonListener(layout: FragmentCreateanimalBinding) {
+        registerImagePickerCallback()
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         Timber.i("PRESSED")
-        layout.confirmCreate.setOnClickListener{
+        layout.confirmCreate.setOnClickListener {
+            animal.animalSpecies = layout.speciesField.text.toString()
+            animal.animalName = layout.nameField.text.toString()
+            animal.region = layout.regionField.text.toString()
+            animal.diet = layout.dietField.text.toString()
+            animal.email = loggedInViewModel.liveFirebaseUser.value!!.email.toString()
+            createAnimalViewModel.addAnimal(loggedInViewModel.liveFirebaseUser,animal)
+            FireBaseImageManager.uploadObjectImageToFirebase(loggedInViewModel.liveFirebaseUser.value!!.uid,animal.uid,binding.imagePrev.drawable.toBitmap(),animal,true)
 
-            createAnimalViewModel.addAnimal(loggedInViewModel.liveFirebaseUser,AnimalModel(animalSpecies = layout.speciesField.text.toString(),
-                animalName = layout.nameField.text.toString(), region = layout.regionField.text.toString(),
-                diet = layout.dietField.text.toString() ))
+
+            FirebaseDBManager.update(loggedInViewModel.liveFirebaseUser.value!!.uid, animal.uid,animal)
         }
 
+
+
     }
+
+    private fun registerImagePickerCallback() {
+        intentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when (result.resultCode) {
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            //i("Got Result ${result.data!!.data}")
+
+                            val image = result.data!!.data!!
+                            requireContext().contentResolver.takePersistableUriPermission(
+                                image,
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            )
+                            //animal.image = image.toString()
+
+
+                            Picasso.get()
+                                .load(image)
+                                .into(binding.imagePrev)
+
+                            //binding.chooseImage.setText("")
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> {}
+                    else -> {}
+                }
+            }
+    }
+
+
 
 
 

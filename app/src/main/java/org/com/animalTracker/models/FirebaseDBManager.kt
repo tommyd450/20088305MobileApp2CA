@@ -7,10 +7,30 @@ import timber.log.Timber
 
 object FirebaseDBManager:AnimalStoreInterface {
     var database: DatabaseReference = FirebaseDatabase.getInstance().reference
-    override fun findAll(donationsList: MutableLiveData<List<AnimalModel>>) {
-        TODO("Not yet implemented")
-    }
 
+
+
+    override fun findOverAll(animalsList: MutableLiveData<List<AnimalModel>>) {
+        database.child("animals")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    Timber.i("Firebase Donation error : ${error.message}")
+                }
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val localList = ArrayList<AnimalModel>()
+                    val children = snapshot.children
+                    children.forEach {
+                        val animal = it.getValue(AnimalModel::class.java)
+                        localList.add(animal!!)
+                    }
+                    database.child("user-animals")
+                        .removeEventListener(this)
+
+                    animalsList.value = localList
+                }
+            })
+    }
 
     override fun findAll(userid: String, animalsList: MutableLiveData<List<AnimalModel>>) {
         database.child("user-animals").child(userid)
@@ -26,7 +46,7 @@ object FirebaseDBManager:AnimalStoreInterface {
                         val animal = it.getValue(AnimalModel::class.java)
                         localList.add(animal!!)
                     }
-                    database.child("user-donations").child(userid)
+                    database.child("user-animals").child(userid)
                         .removeEventListener(this)
 
                     animalsList.value = localList
@@ -35,7 +55,7 @@ object FirebaseDBManager:AnimalStoreInterface {
     }
 
     override fun findById(userid: String, animalid: String, animal: MutableLiveData<AnimalModel>) {
-        database.child("user-donations").child(userid)
+        database.child("user-animals").child(userid)
             .child(animalid).get().addOnSuccessListener {
                 animal.value = it.getValue(AnimalModel::class.java)
                 Timber.i("firebase Got value ${it.value}")

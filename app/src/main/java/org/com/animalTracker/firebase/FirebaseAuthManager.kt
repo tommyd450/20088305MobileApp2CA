@@ -16,6 +16,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
 import org.com.animalTracker.databinding.NavHeaderNavBinding
+import org.com.animalTracker.models.FireBaseImageManager
 import timber.log.Timber
 
 
@@ -37,6 +38,8 @@ class FirebaseAuthManager(application: Application) {
             liveFirebaseUser.postValue(firebaseAuth!!.currentUser)
             loggedOut.postValue(false)
             errorStatus.postValue(false)
+            FireBaseImageManager.checkStorageForExistingProfilePic(
+                firebaseAuth!!.currentUser!!.uid)
         }
         configureGoogleSignIn()
     }
@@ -72,6 +75,7 @@ class FirebaseAuthManager(application: Application) {
         loggedOut.postValue(true)
         errorStatus.postValue(false)
         googleSignInClient.value!!.signOut()
+
     }
 
     private fun configureGoogleSignIn() {
@@ -85,7 +89,7 @@ class FirebaseAuthManager(application: Application) {
     }
 
     fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        Timber.i( "DonationX firebaseAuthWithGoogle:" + acct.id!!)
+        Timber.i( "Animal Tracker firebaseAuthWithGoogle:" + acct.id!!)
 
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         firebaseAuth!!.signInWithCredential(credential)

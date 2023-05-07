@@ -1,8 +1,12 @@
 package org.com.animalTracker.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -16,9 +20,12 @@ import com.squareup.picasso.Picasso
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
 import org.com.animalTracker.databinding.NavHeaderNavBinding
+import org.com.animalTracker.models.FireBaseImageManager
 //import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.ui.auth.LoggedInViewModel
 import org.com.animalTracker.utils.json.customTransformation
+import org.com.animalTracker.utils.json.readImageUri
+import org.com.animalTracker.utils.json.showImagePicker
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navHeaderBinding : NavHeaderNavBinding
     private lateinit var loggedInViewModel : LoggedInViewModel
+    private lateinit var headerView : View
+    private lateinit var intentLauncher : ActivityResultLauncher<Intent>
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,12 +54,12 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-
+        initNavHeader()
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
         appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
+            R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,), drawerLayout)
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         val navView = homeBinding.navView
@@ -60,10 +70,15 @@ class MainActivity : AppCompatActivity() {
     public override fun onStart()
     {
         super.onStart()
+        registerImagePickerCallback()
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         loggedInViewModel.liveFirebaseUser.observe(this, Observer { firebaseUser ->
-            if (firebaseUser != null)
-                updateNavHeader(loggedInViewModel.liveFirebaseUser.value!!)
+            //if (firebaseUser != null)
+           // {
+                updateNavHeader(firebaseUser)
+            //}
+
+
         })
 
         loggedInViewModel.loggedOut.observe(this, Observer { loggedout ->
@@ -71,6 +86,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, Login::class.java))
             }
         })
+
+        navHeaderBinding.imageView.setOnClickListener {
+            showImagePicker(intentLauncher)
+        }
 
     }
 
@@ -81,20 +100,46 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun updateNavHeader(currentUser: FirebaseUser)
-    {
-        var headerView = homeBinding.navView.getHeaderView(0)
-        navHeaderBinding = NavHeaderNavBinding.bind(headerView)
-        navHeaderBinding.email.text = currentUser.email
-        navHeaderBinding.title.text = currentUser.displayName
-        if(currentUser.photoUrl != null && currentUser.displayName != null) {
-            navHeaderBinding.title.text = currentUser.displayName
-            Picasso.get().load(currentUser.photoUrl)
-                .resize(200, 200)
-                .transform(customTransformation())
-                .centerCrop()
-                .into(navHeaderBinding.imageView)
+    private fun updateNavHeader(currentUser: FirebaseUser) {
+        FireBaseImageManager.imageUri.observe(this) { result ->
+            if (result == Uri.EMPTY) {
+                Timber.i("DX NO Existing imageUri")
+                if (currentUser.photoUrl != null) {
+                    //if you're a google user
+                    FireBaseImageManager.updateUserImage(
+                        currentUser.uid,
+                        currentUser.photoUrl,
+                        navHeaderBinding.imageView,
+                        true
+                    )
+                } else {
+                    Timber.i("Loading Existing Default imageUri")
+                    FireBaseImageManager.updateDefaultImage(
+                        currentUser.uid,
+                        R.drawable.ic_launcher_homer,
+                        navHeaderBinding.imageView
+                    )
+                }
+            } else // load existing image from firebase
+            {
+                Timber.i("Loading Existing imageUri")
+                FireBaseImageManager.updateUserImage(
+                    currentUser.uid,
+                    FireBaseImageManager.imageUri.value,
+                    navHeaderBinding.imageView, false
+                )
+            }
         }
+        navHeaderBinding.email.text = currentUser.email
+        if(currentUser.displayName != null)
+            navHeaderBinding.title.text = currentUser.displayName
+
+    }
+
+    private fun initNavHeader() {
+
+        headerView = homeBinding.navView.getHeaderView(0)
+        navHeaderBinding = NavHeaderNavBinding.bind(headerView)
     }
 
 
@@ -105,6 +150,25 @@ class MainActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
+    private fun registerImagePickerCallback() {
+        intentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                when(result.resultCode){
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            Timber.i("DX registerPickerCallback() ${readImageUri(result.resultCode, result.data).toString()}")
+                            FireBaseImageManager
+                                .updateUserImage(loggedInViewModel.liveFirebaseUser.value!!.uid,
+                                    readImageUri(result.resultCode, result.data),
+                                    navHeaderBinding.imageView,
+                                    true)
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
+    }
+
 
 
 }

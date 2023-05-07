@@ -12,6 +12,7 @@ data class AnimalModel(var id: Long = 0,
                        var region: String = "Earth",
                        var diet : String = "",
                        var uid: String = "",
+                       var image: String = "",
                        var email : String ="") : Parcelable
 {
     @Exclude
@@ -23,6 +24,7 @@ data class AnimalModel(var id: Long = 0,
             "region" to region,
             "diet" to diet,
             "uid" to uid,
+            "image" to image,
             "email" to email
         )
     }

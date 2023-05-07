@@ -18,8 +18,11 @@ class AnimalListViewModel : ViewModel() {
     val observableAnimalList: LiveData<List<AnimalModel>>
     get () = animalList
 
+    var readOnly = MutableLiveData(false)
+
     init {
         load()
+        readOnly.value = false
     }
 
     fun load()
@@ -34,6 +37,17 @@ class AnimalListViewModel : ViewModel() {
                 Timber.i(e)
             }
 
+    }
+
+    fun loadAll() {
+        try {
+            readOnly.value = true
+            FirebaseDBManager.findOverAll(animalList)
+            Timber.i("Report LoadAll Success : ${animalList.value.toString()}")
+        }
+        catch (e: Exception) {
+            Timber.i("Report LoadAll Error : $e.message")
+        }
     }
 
     private val _text = MutableLiveData<String>().apply {
