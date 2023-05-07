@@ -13,7 +13,9 @@ data class AnimalModel(var id: Long = 0,
                        var diet : String = "",
                        var uid: String = "",
                        var image: String = "",
-                       var email : String ="") : Parcelable
+                       var email : String ="",
+                       var latitude: Double = 0.0,
+                       var longitude: Double = 0.0) : Parcelable
 {
     @Exclude
     fun toMap(): Map<String, Any?> {
@@ -25,7 +27,9 @@ data class AnimalModel(var id: Long = 0,
             "diet" to diet,
             "uid" to uid,
             "image" to image,
-            "email" to email
+            "email" to email,
+            "latitude" to latitude,
+            "longitude" to longitude
         )
     }
 }
