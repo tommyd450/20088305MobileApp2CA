@@ -11,7 +11,7 @@
     <string name="menu_quickadd">Quick Add</string>
     <string name="menu_gallery">Saved Animal List</string>
     <string name="menu_slideshow">Create Custom Animal Entry</string>
-
+    <string name="menu_map">Map Screen</string>
 
     <!--Auth Related Strings-->
     <string name="auth_email">Existing Email:</string>

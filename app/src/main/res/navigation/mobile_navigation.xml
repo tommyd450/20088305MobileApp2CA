@@ -48,4 +48,13 @@
             app:argType="org.com.animalTracker.models.AnimalModel"
              />
     </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="org.com.animalTracker.ui.maps.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_mapsFragment_to_animalDetails"
+            app:destination="@id/animalDetails" />
+    </fragment>
 </navigation>
