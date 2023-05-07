@@ -3,8 +3,7 @@ package org.com.animalTracker.ui.AnimalList
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import android.widget.TextView
-import androidx.core.view.get
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -13,14 +12,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.com.animalTracker.R
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
-
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.ui.auth.LoggedInViewModel
-
 import timber.log.Timber
 
 
@@ -47,7 +44,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
         animalListViewModel = ViewModelProvider(this).get(AnimalListViewModel::class.java)
         animalListViewModel.observableAnimalList.observe(viewLifecycleOwner, Observer {
                 animals ->
-            animals?.let { render(animals) }
+            animals?.let { render(animals,animalListViewModel.readOnly.value!!) }
         })
 
 
@@ -94,23 +91,20 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
             // list to our adapter class.
             //var adp: AnimalAdapter = AnimalAdapter(AnimalJSONStore.findAll(),this)
             //adp.filterList(filteredlist)
-            render(filteredlist)
+            render(filteredlist,animalListViewModel.readOnly.value!!)
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        //inflater.inflate(R.menu.menu_report, menu)
-        //super.onCreateOptionsMenu(menu, inflater)
 
-    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return NavigationUI.onNavDestinationSelected(item,
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
-    private fun render(animalList: List<AnimalModel>) {
-        fragBinding.recyclerView.adapter = AnimalAdapter(animalList,this)
+    private fun render(animalList: List<AnimalModel>,readOnly:Boolean) {
+        fragBinding.recyclerView.adapter = AnimalAdapter(animalList,this, readOnly)
         if (animalList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
         } else {
@@ -119,8 +113,12 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
     }
 
     override fun onAnimalClick(animal: AnimalModel) {
-        val action = AnimalListFragmentDirections.actionNavGalleryToAnimalDetails(animal)
-        findNavController().navigate(action)
+        if(animalListViewModel.readOnly.value == false)
+        {
+            val action = AnimalListFragmentDirections.actionNavGalleryToAnimalDetails(animal)
+            findNavController().navigate(action)
+        }
+
     }
 
     override fun onResume() {
@@ -133,6 +131,22 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
             }
         })
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_list, menu)
+        val item = menu.findItem(R.id.toggleDonations) as MenuItem
+        item.setActionView(R.layout.toggle_layout)
+        val toggleDonations: SwitchCompat = item.actionView!!.findViewById(R.id.toggleButton)
+        toggleDonations.isChecked = false
+
+        toggleDonations.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) animalListViewModel.loadAll()
+            else animalListViewModel.load()
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

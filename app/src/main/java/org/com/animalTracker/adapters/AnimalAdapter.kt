@@ -16,14 +16,14 @@ interface AnimalClickListener {
 }
 
 class AnimalAdapter constructor(private var animals: List<AnimalModel>,
-                                  private val listener: AnimalClickListener)
+                                  private val listener: AnimalClickListener,private val readOnly: Boolean)
     : RecyclerView.Adapter<AnimalAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
         val binding = CardAnimalBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return MainHolder(binding)
+        return MainHolder(binding,readOnly)
     }
 
     fun filterList(filterlist: ArrayList<AnimalModel>) {
@@ -42,11 +42,11 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
 
     override fun getItemCount(): Int = animals.size
 
-    inner class MainHolder(val binding : CardAnimalBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class MainHolder(val binding : CardAnimalBinding,private val readOnly : Boolean) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(animal: AnimalModel, listener: AnimalClickListener) {
 
-
+            val readOnlyRow = readOnly
             binding.speciesValue.text= animal.animalName.toString()
             binding.scNameValue.text = animal.animalSpecies.toString()
             binding.animalDiet.text = animal.diet.toString()
