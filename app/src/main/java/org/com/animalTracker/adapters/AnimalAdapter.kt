@@ -51,8 +51,9 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
             binding.scNameValue.text = animal.animalSpecies.toString()
             binding.animalDiet.text = animal.diet.toString()
             binding.regionValue.text = animal.region.toString()
-            if(animal.image != "null" || animal.image !="" )
+            if(animal.image != "null" && animal.image !="" )
             {
+                Timber.i("THIS IS A TEST"+ animal.image)
                 FireBaseImageManager.checkStorageForExistingImage(animal.uid)
                 Timber.i("TESTURL"+FireBaseImageManager.objectImageUri.value.toString())
                 Picasso.get().load(animal.image).into(binding.animPic)

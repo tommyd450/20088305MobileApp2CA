@@ -25,6 +25,7 @@ import org.com.animalTracker.models.FireBaseImageManager
 import org.com.animalTracker.ui.auth.LoggedInViewModel
 import org.com.animalTracker.utils.json.customTransformation
 import org.com.animalTracker.utils.json.readImageUri
+import org.com.animalTracker.utils.json.showImagePicker
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -69,6 +70,7 @@ class MainActivity : AppCompatActivity() {
     public override fun onStart()
     {
         super.onStart()
+        registerImagePickerCallback()
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         loggedInViewModel.liveFirebaseUser.observe(this, Observer { firebaseUser ->
             //if (firebaseUser != null)
@@ -84,6 +86,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, Login::class.java))
             }
         })
+
+        navHeaderBinding.imageView.setOnClickListener {
+            showImagePicker(intentLauncher)
+        }
 
     }
 
@@ -127,6 +133,7 @@ class MainActivity : AppCompatActivity() {
         navHeaderBinding.email.text = currentUser.email
         if(currentUser.displayName != null)
             navHeaderBinding.title.text = currentUser.displayName
+
     }
 
     private fun initNavHeader() {
