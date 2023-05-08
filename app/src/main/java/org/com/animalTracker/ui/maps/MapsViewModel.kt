@@ -19,13 +19,14 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     var locationClient : FusedLocationProviderClient
 
     val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
-        .setWaitForAccurateLocation(false)
-        .setMinUpdateIntervalMillis(5000)
+        .setWaitForAccurateLocation(true)
+        .setMinUpdateIntervalMillis(360000)
         .setMaxUpdateDelayMillis(15000)
         .build()
 
     val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
+
             currentLocation.value = locationResult.locations.last()
         }
     }

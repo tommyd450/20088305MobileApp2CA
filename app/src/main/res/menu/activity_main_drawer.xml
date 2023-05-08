@@ -28,6 +28,12 @@
             android:onClick="signOut"
             android:title="@string/auth_signOut" />
 
+        <item
+            android:id="@+id/themeChange"
+            android:icon="@drawable/ic_baseline_nightlight_24"
+            android:onClick="swapTheme"
+            android:title="Swap Theme" />
+
 
     </group>
 </menu>

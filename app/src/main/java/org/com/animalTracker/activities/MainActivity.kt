@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
@@ -43,14 +44,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var headerView : View
     private lateinit var intentLauncher : ActivityResultLauncher<Intent>
     private val mapsViewModel : MapsViewModel by viewModels()
-
+    var nightModeOn: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //AnimalJSONStore.context = applicationContext
-        //AnimalJSONStore.init()
+
         Timber.plant(Timber.DebugTree())
-        //animalStorage = AnimalStorage()
+
         Timber.i("Animal Tracker Application Started")
         homeBinding = HomeBinding.inflate(layoutInflater)
         setContentView(homeBinding.root)
@@ -61,8 +61,6 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         initNavHeader()
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         if(checkLocationPermissions(this)) {
             mapsViewModel.updateCurrentLocation()
         }
@@ -81,11 +79,7 @@ class MainActivity : AppCompatActivity() {
         registerImagePickerCallback()
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         loggedInViewModel.liveFirebaseUser.observe(this, Observer { firebaseUser ->
-
                 updateNavHeader(firebaseUser)
-
-
-
         })
 
         loggedInViewModel.loggedOut.observe(this, Observer { loggedout ->
@@ -156,6 +150,22 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, Login::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    fun swapTheme(item: MenuItem)
+    {
+        if(nightModeOn ==false)
+        {
+            nightModeOn =true
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        else
+        {
+            nightModeOn =false
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+        ; //For night mode theme
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
     private fun registerImagePickerCallback() {
         intentLauncher =

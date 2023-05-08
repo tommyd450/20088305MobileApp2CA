@@ -26,6 +26,7 @@ import org.com.animalTracker.R
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.ui.AnimalList.AnimalListViewModel
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import timber.log.Timber
 
 class MapsFragment : Fragment() {
 
@@ -36,6 +37,7 @@ class MapsFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
+        Timber.i("Test For Reset")
         mapsViewModel.map = googleMap
         mapsViewModel.map.isMyLocationEnabled = true
         mapsViewModel.currentLocation.observe(viewLifecycleOwner) {
@@ -44,7 +46,7 @@ class MapsFragment : Fragment() {
                 mapsViewModel.currentLocation.value!!.longitude
             )
 
-            mapsViewModel.map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14f))
+            //mapsViewModel.map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14f))
             mapsViewModel.map.uiSettings.isZoomControlsEnabled = true
             mapsViewModel.map.uiSettings.isMyLocationButtonEnabled = true
 
@@ -64,7 +66,7 @@ class MapsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_maps, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

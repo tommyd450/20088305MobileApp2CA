@@ -51,6 +51,7 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
             binding.scNameValue.text = animal.animalSpecies.toString()
             binding.animalDiet.text = animal.diet.toString()
             binding.regionValue.text = animal.region.toString()
+
             if(animal.image != "null" && animal.image !="" )
             {
                 Timber.i("THIS IS A TEST"+ animal.image)

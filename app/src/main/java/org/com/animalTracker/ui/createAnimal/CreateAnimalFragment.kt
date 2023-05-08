@@ -109,6 +109,8 @@ class CreateAnimalFragment : Fragment() {
             animal.region = layout.regionField.text.toString()
             animal.diet = layout.dietField.text.toString()
             animal.email = loggedInViewModel.liveFirebaseUser.value!!.email.toString()
+            animal.longitude = mapsViewModel.currentLocation.value!!.longitude
+            animal.latitude = mapsViewModel.currentLocation.value!!.latitude
             createAnimalViewModel.addAnimal(loggedInViewModel.liveFirebaseUser,animal)
             FireBaseImageManager.uploadObjectImageToFirebase(loggedInViewModel.liveFirebaseUser.value!!.uid,animal.uid,binding.imagePrev.drawable.toBitmap(),animal,true)
 
