@@ -15,9 +15,11 @@ interface AnimalClickListener {
     fun onAnimalClick(animal: AnimalModel)
 }
 
-class AnimalAdapter constructor(private var animals: List<AnimalModel>,
+class AnimalAdapter constructor(private var animals: ArrayList<AnimalModel>,
                                   private val listener: AnimalClickListener,private val readOnly: Boolean)
     : RecyclerView.Adapter<AnimalAdapter.MainHolder>() {
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
         val binding = CardAnimalBinding
@@ -35,6 +37,16 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
         notifyDataSetChanged()
     }
 
+    fun removeAt(number: Int)
+    {
+        animals.removeAt(number)
+    }
+
+    fun getItemAt(num:Int):AnimalModel
+    {
+        return animals.get(num)
+    }
+
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val animal = animals[holder.adapterPosition]
         holder.bind(animal,listener)
@@ -43,10 +55,10 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
     override fun getItemCount(): Int = animals.size
 
     inner class MainHolder(val binding : CardAnimalBinding,private val readOnly : Boolean) : RecyclerView.ViewHolder(binding.root) {
-
+        val readOnlyRow = readOnly
         fun bind(animal: AnimalModel, listener: AnimalClickListener) {
 
-            val readOnlyRow = readOnly
+
             binding.speciesValue.text= animal.animalName.toString()
             binding.scNameValue.text = animal.animalSpecies.toString()
             binding.animalDiet.text = animal.diet.toString()
@@ -67,6 +79,8 @@ class AnimalAdapter constructor(private var animals: List<AnimalModel>,
             binding.executePendingBindings()
         }
     }
+
+
 
     //override fun getFilter(){}
 }

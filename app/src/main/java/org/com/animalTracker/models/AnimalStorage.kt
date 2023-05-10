@@ -14,7 +14,7 @@ internal fun getId(): Long {
 object TempStore
 {
     val tanimals = ArrayList<AnimalModel>()
-    fun findAll(): List<AnimalModel> {
+    fun findAll(): ArrayList<AnimalModel> {
         return tanimals
     }
 

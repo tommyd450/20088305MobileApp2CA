@@ -144,7 +144,7 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
 
     }
 
-    private fun render(animalList: List<AnimalModel>) {
+    private fun render(animalList: ArrayList<AnimalModel>) {
         binding.recyclerView2.adapter = AnimalAdapter(animalList,this,false)
         if (animalList.isEmpty()) {
             binding.recyclerView2.visibility = View.GONE

@@ -11,13 +11,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.com.animalTracker.R
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
 import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.models.FirebaseDBManager
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.utils.json.SwipeToDeleteCallback
 import timber.log.Timber
 
 
@@ -64,8 +68,24 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
             }
         })
 
+        val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = fragBinding.recyclerView.adapter as AnimalAdapter
+                if(animalListViewModel.readOnly!!.value ==false)
+                {
+                    adapter.removeAt(viewHolder.adapterPosition)
+                    animalListViewModel.removeAnimal(adapter.getItemAt(viewHolder.adapterPosition))
+                    animalListViewModel.load()
+                }
 
-            return root
+                //
+            }
+        }
+        val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
+        itemTouchDeleteHelper.attachToRecyclerView(fragBinding.recyclerView)
+        setSwipeRefresh()
+        checkSwipeRefresh()
+        return root
     }
 
     private fun filter(text: String) {
@@ -103,7 +123,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
-    private fun render(animalList: List<AnimalModel>,readOnly:Boolean) {
+    private fun render(animalList: ArrayList<AnimalModel>,readOnly:Boolean) {
         fragBinding.recyclerView.adapter = AnimalAdapter(animalList,this, readOnly)
         if (animalList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
@@ -131,6 +151,8 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
                 animalListViewModel.load()
             }
         })
+        setSwipeRefresh()
+        checkSwipeRefresh()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -147,6 +169,27 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
+
+    fun setSwipeRefresh() {
+
+        fragBinding.swiperefresh.setOnRefreshListener {
+            if(!animalListViewModel.readOnly.value!!)
+            {
+
+            }
+            fragBinding.swiperefresh.isRefreshing = true
+            animalListViewModel.load()
+            fragBinding.swiperefresh.isRefreshing = false
+
+        }
+    }
+
+    fun checkSwipeRefresh() {
+        if (fragBinding.swiperefresh.isRefreshing)
+            fragBinding.swiperefresh.isRefreshing = false
+    }
+
+
 
 
 

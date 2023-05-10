@@ -12,9 +12,9 @@ import timber.log.Timber
 class QuickAddViewModel : ViewModel() {
 
 
-    private val animalList = MutableLiveData<List<AnimalModel>>()
+    private val animalList = MutableLiveData<ArrayList<AnimalModel>>()
     var liveFirebaseUser = MutableLiveData<FirebaseUser>()
-    val observableAnimalList: LiveData<List<AnimalModel>>
+    val observableAnimalList: LiveData<ArrayList<AnimalModel>>
         get () = animalList
 
     private val status = MutableLiveData<Boolean>()
