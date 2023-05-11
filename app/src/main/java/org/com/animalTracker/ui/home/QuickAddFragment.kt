@@ -123,6 +123,7 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
                             region = region,
                             animalSpecies = species,
                             diet = diet,
+                            email = loggedInViewModel.liveFirebaseUser.value!!.email.toString(),
                             longitude = mapsViewModel.currentLocation.value!!.longitude,
                             latitude =  mapsViewModel.currentLocation.value!!.latitude))
                         render(TempStore.findAll())

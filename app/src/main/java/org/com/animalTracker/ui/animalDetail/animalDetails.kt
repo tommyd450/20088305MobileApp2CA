@@ -106,7 +106,7 @@ class AnimalDetails : Fragment() {
                 image = args.animal.image
                 )
             viewModel.updateAnimal(an)
-            FireBaseImageManager.uploadObjectImageToFirebase(loggedInViewModel.liveFirebaseUser.value!!.uid,args.animal.uid,fragBinding.animalDetailsImage.drawable.toBitmap(),args.animal,true)
+            FireBaseImageManager.uploadObjectImageToFirebase(loggedInViewModel.liveFirebaseUser.value!!.uid,args.animal.uid,fragBinding.animalDetailsImage.drawable.toBitmap(),an,true)
             val action = AnimalDetailsDirections.actionAnimalDetailsToNavGallery()
             findNavController().navigate(action)
         }
