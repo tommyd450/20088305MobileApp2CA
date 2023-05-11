@@ -11,7 +11,21 @@
     <string name="menu_quickadd">Quick Add</string>
     <string name="menu_gallery">Saved Animal List</string>
     <string name="menu_slideshow">Create Custom Animal Entry</string>
+    <string name="menu_map">Map Screen</string>
 
+    <!--Animal Creation-->
+
+    <string name="animal_add_diet">Please Enter the animals Diet.</string>
+    <string name="animal_add_name">Please Enter the animals name.</string>
+    <string name="animal_add_species">Please Enter the animals Species.</string>
+    <string name="animal_add_region">Please Enter the type of region the animal was spotted in.</string>
+
+
+    <!-- Update Related Strings-->
+    <string name="animal_up_diet">Update animal diet.</string>
+    <string name="animal_up_name">Update animal name.</string>
+    <string name="animal_up_species">Update animal Species</string>
+    <string name="animal_up_region">Update Animal Region</string>
 
     <!--Auth Related Strings-->
     <string name="auth_email">Existing Email:</string>

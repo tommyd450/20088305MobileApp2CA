@@ -12,10 +12,10 @@ import timber.log.Timber
 
 class AnimalListViewModel : ViewModel() {
 
-
-    private val animalList = MutableLiveData<List<AnimalModel>>()
+    private val status = MutableLiveData<Boolean>()
+    private val animalList = MutableLiveData<ArrayList<AnimalModel>>()
     var liveFirebaseUser = MutableLiveData<FirebaseUser>()
-    val observableAnimalList: LiveData<List<AnimalModel>>
+    val observableAnimalList: LiveData<ArrayList<AnimalModel>>
     get () = animalList
 
     var readOnly = MutableLiveData(false)
@@ -52,6 +52,21 @@ class AnimalListViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is gallery Fragment"
+    }
+
+    fun removeAnimal(animal: AnimalModel)
+    {
+        status.value = try {
+            //AnimalJSONStore.delete(animal)
+            Timber.i("Animal Details"+animal.uid+""+animal.id)
+            FirebaseDBManager.delete(liveFirebaseUser.value!!.uid,""+animal.uid)
+            Timber.i("Completed")
+            true
+        } catch (e:java.lang.Exception){
+            Timber.i("Failed"+e)
+            false
+        }
+
     }
     val text: LiveData<String> = _text
 }

@@ -1,13 +1,17 @@
 package org.com.animalTracker.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
@@ -20,9 +24,12 @@ import com.squareup.picasso.Picasso
 import org.com.animalTracker.R
 import org.com.animalTracker.databinding.HomeBinding
 import org.com.animalTracker.databinding.NavHeaderNavBinding
+import org.com.animalTracker.helpers.checkLocationPermissions
+import org.com.animalTracker.helpers.isPermissionGranted
 import org.com.animalTracker.models.FireBaseImageManager
 //import org.com.animalTracker.models.AnimalJSONStore
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.ui.maps.MapsViewModel
 import org.com.animalTracker.utils.json.customTransformation
 import org.com.animalTracker.utils.json.readImageUri
 import org.com.animalTracker.utils.json.showImagePicker
@@ -36,15 +43,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loggedInViewModel : LoggedInViewModel
     private lateinit var headerView : View
     private lateinit var intentLauncher : ActivityResultLauncher<Intent>
-
-
+    private val mapsViewModel : MapsViewModel by viewModels()
+    var nightModeOn: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //AnimalJSONStore.context = applicationContext
-        //AnimalJSONStore.init()
+
         Timber.plant(Timber.DebugTree())
-        //animalStorage = AnimalStorage()
+
         Timber.i("Animal Tracker Application Started")
         homeBinding = HomeBinding.inflate(layoutInflater)
         setContentView(homeBinding.root)
@@ -55,11 +61,11 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         initNavHeader()
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-
+        if(checkLocationPermissions(this)) {
+            mapsViewModel.updateCurrentLocation()
+        }
         appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,), drawerLayout)
+            R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,R.id.mapsFragment), drawerLayout)
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         val navView = homeBinding.navView
@@ -73,12 +79,7 @@ class MainActivity : AppCompatActivity() {
         registerImagePickerCallback()
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         loggedInViewModel.liveFirebaseUser.observe(this, Observer { firebaseUser ->
-            //if (firebaseUser != null)
-           // {
                 updateNavHeader(firebaseUser)
-            //}
-
-
         })
 
         loggedInViewModel.loggedOut.observe(this, Observer { loggedout ->
@@ -150,6 +151,22 @@ class MainActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
+
+    fun swapTheme(item: MenuItem)
+    {
+        if(nightModeOn ==false)
+        {
+            nightModeOn =true
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        else
+        {
+            nightModeOn =false
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+        ; //For night mode theme
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    }
     private fun registerImagePickerCallback() {
         intentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -169,6 +186,19 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (isPermissionGranted(requestCode, grantResults))
+            mapsViewModel.updateCurrentLocation()
+        else {
+            // permissions denied, so use a default location
+            mapsViewModel.currentLocation.value = Location("Default").apply {
+                latitude = 52.245696
+                longitude = -7.139102
+            }
+        }
+        Timber.i("LOC : %s", mapsViewModel.currentLocation.value)
+    }
 
 }

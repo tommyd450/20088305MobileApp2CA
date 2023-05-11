@@ -23,6 +23,7 @@ import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.FirebaseDBManager
 import org.com.animalTracker.models.TempStore
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.ui.maps.MapsViewModel
 
 import org.json.JSONArray
 import org.json.JSONException
@@ -41,6 +42,7 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
     lateinit var quickAddViewModel : QuickAddViewModel
     private val url = "https://api.api-ninjas.com/v1/animals?name="
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    private val mapsViewModel: MapsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,7 +122,10 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
                         TempStore.create(AnimalModel(animalName = name,
                             region = region,
                             animalSpecies = species,
-                            diet = diet ))
+                            diet = diet,
+                            email = loggedInViewModel.liveFirebaseUser.value!!.email.toString(),
+                            longitude = mapsViewModel.currentLocation.value!!.longitude,
+                            latitude =  mapsViewModel.currentLocation.value!!.latitude))
                         render(TempStore.findAll())
                     }
 
@@ -140,7 +145,7 @@ class QuickAddFragment : Fragment(), AnimalClickListener {
 
     }
 
-    private fun render(animalList: List<AnimalModel>) {
+    private fun render(animalList: ArrayList<AnimalModel>) {
         binding.recyclerView2.adapter = AnimalAdapter(animalList,this,false)
         if (animalList.isEmpty()) {
             binding.recyclerView2.visibility = View.GONE

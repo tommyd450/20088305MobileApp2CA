@@ -10,7 +10,7 @@ object FirebaseDBManager:AnimalStoreInterface {
 
 
 
-    override fun findOverAll(animalsList: MutableLiveData<List<AnimalModel>>) {
+    override fun findOverAll(animalsList: MutableLiveData<ArrayList<AnimalModel>>) {
         database.child("animals")
             .addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
@@ -32,7 +32,7 @@ object FirebaseDBManager:AnimalStoreInterface {
             })
     }
 
-    override fun findAll(userid: String, animalsList: MutableLiveData<List<AnimalModel>>) {
+    override fun findAll(userid: String, animalsList: MutableLiveData<ArrayList<AnimalModel>>) {
         database.child("user-animals").child(userid)
             .addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {

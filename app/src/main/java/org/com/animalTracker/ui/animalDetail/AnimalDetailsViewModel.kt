@@ -34,10 +34,9 @@ class AnimalDetailsViewModel : ViewModel() {
 
     fun updateAnimal(animal: AnimalModel)
     {
-        status.value = try{
-            //AnimalJSONStore.update(animal)
+        try{
+
             FirebaseDBManager.update(liveFirebaseUser.value!!.uid, animal.uid,animal)
-            true
         } catch (e:IllegalArgumentException){
         false
     }

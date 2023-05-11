@@ -11,13 +11,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.com.animalTracker.R
 import org.com.animalTracker.adapters.AnimalAdapter
 import org.com.animalTracker.adapters.AnimalClickListener
 import org.com.animalTracker.databinding.FragmentAnimallistBinding
 import org.com.animalTracker.models.AnimalModel
+import org.com.animalTracker.models.FirebaseDBManager
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.utils.json.SwipeToDeleteCallback
+import org.com.animalTracker.utils.json.SwipeToEditCallback
 import timber.log.Timber
 
 
@@ -64,8 +69,37 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
             }
         })
 
+        val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = fragBinding.recyclerView.adapter as AnimalAdapter
+                if(animalListViewModel.readOnly!!.value ==false)
+                {
 
-            return root
+                    animalListViewModel.removeAnimal(adapter.getItemAt(viewHolder.adapterPosition))
+                    adapter.removeAt(viewHolder.adapterPosition)
+                    animalListViewModel.load()
+                }
+
+                //
+            }
+        }
+
+        val swipeEditHandler = object : SwipeToEditCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = fragBinding.recyclerView.adapter as AnimalAdapter
+                if(animalListViewModel.readOnly!!.value ==false) {
+                    onAnimalClick(adapter.getItemAt(viewHolder.adapterPosition))
+                }
+            }
+        }
+        val itemTouchEditHelper = ItemTouchHelper(swipeEditHandler)
+        itemTouchEditHelper.attachToRecyclerView(fragBinding.recyclerView)
+
+        val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
+        itemTouchDeleteHelper.attachToRecyclerView(fragBinding.recyclerView)
+        setSwipeRefresh()
+        checkSwipeRefresh()
+        return root
     }
 
     private fun filter(text: String) {
@@ -103,7 +137,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
-    private fun render(animalList: List<AnimalModel>,readOnly:Boolean) {
+    private fun render(animalList: ArrayList<AnimalModel>,readOnly:Boolean) {
         fragBinding.recyclerView.adapter = AnimalAdapter(animalList,this, readOnly)
         if (animalList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
@@ -123,6 +157,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
 
     override fun onResume() {
         super.onResume()
+        setHasOptionsMenu(true)
         animalListViewModel.load()
         loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
             if (firebaseUser != null) {
@@ -130,21 +165,46 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
                 animalListViewModel.load()
             }
         })
+        animalListViewModel.readOnly.value = false
+        setSwipeRefresh()
+        checkSwipeRefresh()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_list, menu)
-        val item = menu.findItem(R.id.toggleDonations) as MenuItem
-        item.setActionView(R.layout.toggle_layout)
-        val toggleDonations: SwitchCompat = item.actionView!!.findViewById(R.id.toggleButton)
-        toggleDonations.isChecked = false
 
-        toggleDonations.setOnCheckedChangeListener { _, isChecked ->
+        inflater.inflate(R.menu.menu_list, menu)
+        val item = menu.findItem(R.id.toggleListAnimals) as MenuItem
+        item.setActionView(R.layout.toggle_layout)
+        val toggleAnimals: SwitchCompat = item.actionView!!.findViewById(R.id.toggleButton)
+        toggleAnimals.isChecked = false
+
+        toggleAnimals.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) animalListViewModel.loadAll()
             else animalListViewModel.load()
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
+
+    fun setSwipeRefresh() {
+
+        fragBinding.swiperefresh.setOnRefreshListener {
+            if(!animalListViewModel.readOnly.value!!)
+            {
+
+            }
+            fragBinding.swiperefresh.isRefreshing = true
+            animalListViewModel.load()
+            fragBinding.swiperefresh.isRefreshing = false
+
+        }
+    }
+
+    fun checkSwipeRefresh() {
+        if (fragBinding.swiperefresh.isRefreshing)
+            fragBinding.swiperefresh.isRefreshing = false
+    }
+
+
 
 
 

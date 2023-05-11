@@ -12,8 +12,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -25,7 +27,9 @@ import org.com.animalTracker.main.App
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.FireBaseImageManager
 import org.com.animalTracker.models.FirebaseDBManager
+import org.com.animalTracker.ui.AnimalList.AnimalListFragmentDirections
 import org.com.animalTracker.ui.auth.LoggedInViewModel
+import org.com.animalTracker.ui.maps.MapsViewModel
 import org.com.animalTracker.utils.json.readImageUri
 import org.com.animalTracker.utils.json.showImagePicker
 import timber.log.Timber
@@ -44,6 +48,8 @@ class CreateAnimalFragment : Fragment() {
     private lateinit var loggedInViewModel: LoggedInViewModel
     private val url = "https://api.api-ninjas.com/v1/animals?name="
     private lateinit var intentLauncher: ActivityResultLauncher<Intent>
+    private val mapsViewModel: MapsViewModel by activityViewModels()
+
     var animal = AnimalModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +93,7 @@ class CreateAnimalFragment : Fragment() {
         when (status) {
             true -> {
                 view?.let {
-                    //Uncomment this if you want to immediately return to Report
+
                     //findNavController().popBackStack()
                 }
             }
@@ -95,26 +101,34 @@ class CreateAnimalFragment : Fragment() {
         }
     }
 
+
     fun setButtonListener(layout: FragmentCreateanimalBinding) {
         registerImagePickerCallback()
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         Timber.i("PRESSED")
+
         layout.confirmCreate.setOnClickListener {
             animal.animalSpecies = layout.speciesField.text.toString()
             animal.animalName = layout.nameField.text.toString()
             animal.region = layout.regionField.text.toString()
             animal.diet = layout.dietField.text.toString()
             animal.email = loggedInViewModel.liveFirebaseUser.value!!.email.toString()
+            animal.longitude = mapsViewModel.currentLocation.value!!.longitude
+            animal.latitude = mapsViewModel.currentLocation.value!!.latitude
             createAnimalViewModel.addAnimal(loggedInViewModel.liveFirebaseUser,animal)
             FireBaseImageManager.uploadObjectImageToFirebase(loggedInViewModel.liveFirebaseUser.value!!.uid,animal.uid,binding.imagePrev.drawable.toBitmap(),animal,true)
 
 
             FirebaseDBManager.update(loggedInViewModel.liveFirebaseUser.value!!.uid, animal.uid,animal)
+            //val action = CreateAnimalFragmentDirections.actionNavSlideshowToNavGallery()
+            //findNavController().navigate(action)
         }
 
 
 
     }
+
+
 
     private fun registerImagePickerCallback() {
         intentLauncher =
@@ -145,8 +159,6 @@ class CreateAnimalFragment : Fragment() {
                 }
             }
     }
-
-
 
 
 
