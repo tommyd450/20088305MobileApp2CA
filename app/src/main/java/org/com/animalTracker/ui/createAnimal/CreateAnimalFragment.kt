@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -26,6 +27,7 @@ import org.com.animalTracker.main.App
 import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.FireBaseImageManager
 import org.com.animalTracker.models.FirebaseDBManager
+import org.com.animalTracker.ui.AnimalList.AnimalListFragmentDirections
 import org.com.animalTracker.ui.auth.LoggedInViewModel
 import org.com.animalTracker.ui.maps.MapsViewModel
 import org.com.animalTracker.utils.json.readImageUri
@@ -91,7 +93,7 @@ class CreateAnimalFragment : Fragment() {
         when (status) {
             true -> {
                 view?.let {
-                    //Uncomment this if you want to immediately return to Report
+
                     //findNavController().popBackStack()
                 }
             }
@@ -99,10 +101,12 @@ class CreateAnimalFragment : Fragment() {
         }
     }
 
+
     fun setButtonListener(layout: FragmentCreateanimalBinding) {
         registerImagePickerCallback()
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         Timber.i("PRESSED")
+
         layout.confirmCreate.setOnClickListener {
             animal.animalSpecies = layout.speciesField.text.toString()
             animal.animalName = layout.nameField.text.toString()
@@ -116,11 +120,15 @@ class CreateAnimalFragment : Fragment() {
 
 
             FirebaseDBManager.update(loggedInViewModel.liveFirebaseUser.value!!.uid, animal.uid,animal)
+            //val action = CreateAnimalFragmentDirections.actionNavSlideshowToNavGallery()
+            //findNavController().navigate(action)
         }
 
 
 
     }
+
+
 
     private fun registerImagePickerCallback() {
         intentLauncher =
@@ -151,8 +159,6 @@ class CreateAnimalFragment : Fragment() {
                 }
             }
     }
-
-
 
 
 
