@@ -14,10 +14,13 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+
     <style name="toggleStyle">
         <item name="colorControlActivated">@color/colorWhite</item>
         <item name="colorControlHighlight">@color/black</item>
     </style>
+
+
 
     <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">
 

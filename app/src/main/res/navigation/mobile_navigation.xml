@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_nav_home_to_nav_gallery"
-            app:destination="@id/nav_gallery" />
+            app:destination="@id/nav_gallery"
+            app:exitAnim="@android:anim/slide_in_left"
+            app:popEnterAnim="@android:anim/slide_in_left" />
     </fragment>
 
     <fragment
@@ -22,7 +24,10 @@
         tools:layout="@layout/fragment_animallist" >
         <action
             android:id="@+id/action_nav_gallery_to_animalDetails"
-            app:destination="@id/animalDetails" />
+            app:destination="@id/animalDetails"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left" />
 
     </fragment>
 
@@ -33,7 +38,8 @@
         tools:layout="@layout/fragment_createanimal" >
         <action
             android:id="@+id/action_nav_slideshow_to_nav_gallery"
-            app:destination="@id/nav_gallery" />
+            app:destination="@id/nav_gallery"
+            app:exitAnim="@android:anim/slide_in_left" />
     </fragment>
     <fragment
         android:id="@+id/animalDetails"
@@ -42,10 +48,23 @@
         tools:layout="@layout/fragment_animal_details" >
         <action
             android:id="@+id/action_animalDetails_to_nav_gallery"
-            app:destination="@id/nav_gallery" />
+            app:destination="@id/nav_gallery"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left" />
         <argument
             android:name="Animal"
             app:argType="org.com.animalTracker.models.AnimalModel"
              />
+    </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="org.com.animalTracker.ui.maps.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_mapsFragment_to_animalDetails"
+            app:destination="@id/animalDetails"
+            app:enterAnim="@anim/nav_default_exit_anim" />
     </fragment>
 </navigation>
