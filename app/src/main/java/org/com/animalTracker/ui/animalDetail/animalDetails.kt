@@ -50,7 +50,11 @@ class AnimalDetails : Fragment() {
         fragBinding.editSpeciesField.setText(args.animal.animalSpecies)
         fragBinding.editRegionField.setText(args.animal.region)
         fragBinding.editDietField.setText(args.animal.diet)
-        Picasso.get().load(args.animal.image).into(fragBinding.animalDetailsImage)
+        if(args.animal.image !="" && args.animal.image !="null")
+        {
+            Picasso.get().load(args.animal.image).into(fragBinding.animalDetailsImage)
+        }
+
         viewModel = ViewModelProvider(this).get(AnimalDetailsViewModel::class.java)
         Timber.i("PRESSED")
         print("Pressed")

@@ -22,6 +22,7 @@ import org.com.animalTracker.models.AnimalModel
 import org.com.animalTracker.models.FirebaseDBManager
 import org.com.animalTracker.ui.auth.LoggedInViewModel
 import org.com.animalTracker.utils.json.SwipeToDeleteCallback
+import org.com.animalTracker.utils.json.SwipeToEditCallback
 import timber.log.Timber
 
 
@@ -73,14 +74,27 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
                 val adapter = fragBinding.recyclerView.adapter as AnimalAdapter
                 if(animalListViewModel.readOnly!!.value ==false)
                 {
-                    adapter.removeAt(viewHolder.adapterPosition)
+
                     animalListViewModel.removeAnimal(adapter.getItemAt(viewHolder.adapterPosition))
+                    adapter.removeAt(viewHolder.adapterPosition)
                     animalListViewModel.load()
                 }
 
                 //
             }
         }
+
+        val swipeEditHandler = object : SwipeToEditCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = fragBinding.recyclerView.adapter as AnimalAdapter
+                if(animalListViewModel.readOnly!!.value ==false) {
+                    onAnimalClick(adapter.getItemAt(viewHolder.adapterPosition))
+                }
+            }
+        }
+        val itemTouchEditHelper = ItemTouchHelper(swipeEditHandler)
+        itemTouchEditHelper.attachToRecyclerView(fragBinding.recyclerView)
+
         val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
         itemTouchDeleteHelper.attachToRecyclerView(fragBinding.recyclerView)
         setSwipeRefresh()
