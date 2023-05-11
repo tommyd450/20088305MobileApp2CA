@@ -165,6 +165,7 @@ class AnimalListFragment : Fragment() , AnimalClickListener{
                 animalListViewModel.load()
             }
         })
+        animalListViewModel.readOnly.value = false
         setSwipeRefresh()
         checkSwipeRefresh()
     }
